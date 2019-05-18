@@ -1,0 +1,11 @@
+name: Vital
+version: 1.0
+main: io.github.caprapaul.vital.Vital
+api-version: 1.14
+commands:
+  test:
+    aliases: [test1, test2]
+    description: This is a demo command.
+    usage: /test
+    permission: vital.test
+    permission-message: You don't have vital.test permission.
