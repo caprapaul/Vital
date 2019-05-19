@@ -150,8 +150,8 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage("Send a teleport request to a player.");
-            player.sendMessage("/tpa <player>");
+            player.sendMessage(ChatColor.GRAY + "Send a teleport request to a player.");
+            player.sendMessage(ChatColor.GRAY + "/tpa <player>");
             return;
         }
 
