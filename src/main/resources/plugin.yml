@@ -8,13 +8,49 @@ commands:
     description: This is a demo command.
     usage: /test
     permission: vital.test
-    permission-message: You don't have vital.test permission.
+    permission-message: You do not have permission to use this command!
+  tpa:
+    description: Send a teleport request to a player on the server.
+    aliases: [tpr, tprequest]
+    permission: vital.tpa
+    permission-message: You do not have permission to use this command!
+  tpahere:
+    description: Send a teleport invite to a player on the server.
+    aliases: [tpinv, tpinvite]
+    permission: vital.tpa
+    permission-message: You do not have permission to use this command!
+  tpaccept:
+    description: Accept a teleport request.
+    aliases: accept
+    permission: vital.tpaccept
+    permission-message: You do not have permission to use this command!
+  tpdeny:
+    description: Deny a teleport request.
+    aliases: deny
+    permission: vital.tpdeny
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
     description: Gives access to all vital commands.
     children:
       vital.test: true
+      vital.tpa: true
+      vital.tpahere: true
+      vital.tpaccept: true
+      vital.tpdeny: true
   vital.test:
-    description: Allows you to use the test command.
+    description: Allows you to use the /test command.
+    default: true
+  vital.tpa:
+    description: Allows you to use the /tpa command.
+    default: true
+  vital.tpahere:
+    description: Allows you to use the /tpahere command.
+    default: true
+  vital.tpaccept:
+    description: Allows you to use the /tpaccept command.
+    default: true
+  vital.tpdeny:
+    description: Allows you to use the /tpdeny command.
     default: true
