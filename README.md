@@ -1,6 +1,9 @@
 # Vital
 Vital is a Spigot/Bukkit plugin which features vital commands for a minecraft server.
 
+### Target version:
+1.14
+
 ## Commands
 Vital currently features the following commands
 ```
