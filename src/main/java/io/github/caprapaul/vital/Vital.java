@@ -5,10 +5,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class Vital extends JavaPlugin
 {
+
+    private void loadCommands()
+    {
+        new TeleportCommands(this);
+    }
+
     @Override
     public void onEnable()
     {
-        this.getCommand("test").setExecutor(new TeleportCommands(this));
+        loadCommands();
     }
 
     @Override

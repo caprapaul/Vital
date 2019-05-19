@@ -10,5 +10,4 @@ import java.lang.annotation.Target;
 public @interface BetterCommand
 {
     String name();
-    String[] aliases() default{""};
 }

@@ -10,8 +10,10 @@ public class TeleportCommands extends BetterCommandExecutor
 {
     private final Vital plugin;
 
-    public TeleportCommands(Vital plugin) {
-        this.plugin = plugin; // Store the plugin in situations where you need it.
+    public TeleportCommands(Vital plugin)
+    {
+        this.plugin = plugin;
+        loadCommands(this, this.plugin);
     }
 
     public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args)
@@ -21,7 +23,7 @@ public class TeleportCommands extends BetterCommandExecutor
     }
 
     @BetterCommand(name = "test")
-    public void test(CommandSender commandSender, String[] args)
+    public void test(CommandSender commandSender, String[] args, String commandLabel)
     {
         plugin.getLogger().info("TEST!");
     }

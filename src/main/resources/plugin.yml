@@ -9,3 +9,12 @@ commands:
     usage: /test
     permission: vital.test
     permission-message: You don't have vital.test permission.
+
+permissions:
+  vital.*:
+    description: Gives access to all vital commands.
+    children:
+      vital.test: true
+  vital.test:
+    description: Allows you to use the test command.
+    default: true
