@@ -140,7 +140,7 @@ public class WarpCommands extends BetterCommandExecutor
 
         Location location = player.getLocation();
         addWarp(new Warp(name, location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been created.");
+        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.GREEN  + "created.");
     }
 
     @BetterCommand(name = "delwarp")
@@ -174,6 +174,6 @@ public class WarpCommands extends BetterCommandExecutor
             return;
         }
 
-        commandSender.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.RED + name + ChatColor.GRAY + " has been deleted.");
+        commandSender.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.RED + "deleted.");
     }
 }
