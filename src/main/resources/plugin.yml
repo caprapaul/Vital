@@ -29,6 +29,18 @@ commands:
     aliases: deny
     permission: vital.tpdeny
     permission-message: You do not have permission to use this command!
+  warp:
+    description: Teleport to a warp.
+    permission: vital.warp
+    permission-message: You do not have permission to use this command!
+  warps:
+    description: Display available warp locations.
+    permission: vital.warps
+    permission-message: You do not have permission to use this command!
+  setwarp:
+    description: Set a warp location.
+    permission: vital.setwarp
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
@@ -54,3 +66,12 @@ permissions:
   vital.tpdeny:
     description: Allows you to use the /tpdeny command.
     default: true
+  vital.warp:
+    description: Allows you to use the /warp command.
+    default: true
+  vital.warps:
+    description: Allows you to use the /warps command.
+    default: true
+  vital.setwarp:
+    description: Allows you to use the /setwarp command.
+    default: op

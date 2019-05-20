@@ -2,9 +2,11 @@ package io.github.caprapaul.vital;
 
 import io.github.caprapaul.vital.commands.TeleportCommands;
 import io.github.caprapaul.vital.commands.WarpCommands;
+import io.github.caprapaul.vital.data.Warp;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -12,6 +14,11 @@ import java.io.IOException;
 
 public class Vital extends JavaPlugin
 {
+    static
+    {
+        ConfigurationSerialization.registerClass(Warp.class, "Warp");
+    }
+
     public String prefix = ChatColor.GOLD + "[" + ChatColor.AQUA + "V" + ChatColor.GOLD + "] " + ChatColor.RESET;
 
     private FileConfiguration warps;
@@ -30,7 +37,7 @@ public class Vital extends JavaPlugin
 
     private void loadFiles()
     {
-        this.warpsFile = new File(getDataFolder(), "data.yml");
+        this.warpsFile = new File(getDataFolder(), "warps.yml");
     }
 
     private void loadYamls()
