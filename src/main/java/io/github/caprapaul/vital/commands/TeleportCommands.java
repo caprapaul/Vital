@@ -69,14 +69,14 @@ public class TeleportCommands extends BetterCommandExecutor
 
     private void sendRequest(Player sender, Player recipient, RequestType type)
     {
-        sender.sendMessage(ChatColor.GRAY + "Sending a teleport request to " + recipient.getName() + ".");
+        sender.sendMessage(plugin.prefix + ChatColor.GRAY + "Sending a teleport request to " + recipient.getName() + ".");
 
         String sendTpAccept = "";
         String sendTpDeny = "";
 
         if (recipient.hasPermission("vital.tpaccept"))
         {
-            sendTpAccept = " To accept the teleport request, type " +  ChatColor.GREEN + "/tpaccept" + ChatColor.RESET + ".";
+            sendTpAccept = ChatColor.GRAY + "\nTo accept the teleport request, type " +  ChatColor.GREEN + "/tpaccept" + ChatColor.GRAY + ".";
         }
         else
         {
@@ -85,7 +85,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (recipient.hasPermission("vital.tpdeny"))
         {
-            sendTpDeny = " To deny the teleport request, type " + ChatColor.RED + "/tpdeny" + ChatColor.RESET + ".";
+            sendTpDeny = ChatColor.GRAY + "\nTo deny the teleport request, type " + ChatColor.RED + "/tpdeny" + ChatColor.GRAY + ".";
         }
         else
         {
@@ -95,10 +95,10 @@ public class TeleportCommands extends BetterCommandExecutor
         switch (type)
         {
             case HERE:
-                recipient.sendMessage(ChatColor.GOLD + sender.getName() + ChatColor.RESET + ChatColor.GRAY + " has sent you a request to teleport to them." + ChatColor.RESET + sendTpAccept + sendTpDeny);
+                recipient.sendMessage(plugin.prefix + ChatColor.GOLD + sender.getName() + ChatColor.GRAY + " has sent you a request to teleport to them." + ChatColor.RESET + sendTpAccept + sendTpDeny);
                 break;
             case THERE:
-                recipient.sendMessage(ChatColor.GOLD + sender.getName() + ChatColor.RESET + ChatColor.GRAY + " has sent a request to teleport to you." + ChatColor.RESET + sendTpAccept + sendTpDeny);
+                recipient.sendMessage(plugin.prefix + ChatColor.GOLD + sender.getName() + ChatColor.GRAY + " has sent a request to teleport to you." + ChatColor.RESET + sendTpAccept + sendTpDeny);
                 break;
         }
         currentRequests.put(recipient.getName(), new Request(sender.getName(), type));
@@ -111,7 +111,7 @@ public class TeleportCommands extends BetterCommandExecutor
             Player sender = plugin.getServer().getPlayer(currentRequests.get(key).getSender());
             if (!(sender == null))
             {
-                sender.sendMessage(ChatColor.RED + "Your teleport request timed out.");
+                sender.sendMessage(plugin.prefix + ChatColor.RED + "Your teleport request timed out.");
             }
 
             currentRequests.remove(key);
@@ -129,7 +129,7 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(ChatColor.RED + "Error: The console can't teleport!");
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't teleport!");
             return;
         }
 
@@ -142,7 +142,7 @@ public class TeleportCommands extends BetterCommandExecutor
                 long diff = (System.currentTimeMillis() - tpaCooldowns.get(commandSender.getName())) / 1000;
                 if (diff < cooldown)
                 {
-                    player.sendMessage(ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
+                    player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
                     return;
                 }
             }
@@ -150,8 +150,14 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage(ChatColor.GRAY + "Send a teleport request to a player.");
-            player.sendMessage(ChatColor.GRAY + "/tpa <player>");
+            player.sendMessage(plugin.prefix +  "Send a teleport request to a player.");
+            player.sendMessage(ChatColor.GRAY + "Usage: /tpa <player>");
+            return;
+        }
+
+        if (args.length > 1)
+        {
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
             return;
         }
 
@@ -160,13 +166,13 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (target == null)
         {
-            player.sendMessage(ChatColor.RED + "Error: You can only send a teleport request to online players!");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can only send a teleport request to online players!");
             return;
         }
 
         if (target == player)
         {
-            player.sendMessage(ChatColor.RED + "Error: You can't teleport to yourself!");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't teleport to yourself!");
             return;
         }
 
@@ -176,7 +182,7 @@ public class TeleportCommands extends BetterCommandExecutor
         {
             if (currentRequests.get(target.getName()).getSender().equals(player.getName()))
             {
-                player.sendMessage(ChatColor.RED + "Error: You can't send multiple requests to the same player!");
+                player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't send multiple requests to the same player!");
                 return;
             }
         }
@@ -199,7 +205,7 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(ChatColor.RED + "Error: Can't teleport to console!");
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Can't teleport to console!");
             return;
         }
 
@@ -212,7 +218,7 @@ public class TeleportCommands extends BetterCommandExecutor
                 long diff = (System.currentTimeMillis() - tpaCooldowns.get(commandSender.getName())) / 1000;
                 if (diff < cooldown)
                 {
-                    player.sendMessage(ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
+                    player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
                     return;
                 }
             }
@@ -220,8 +226,14 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage("Send a teleport request to a player.");
-            player.sendMessage("/tpahere <player>");
+            player.sendMessage(plugin.prefix + "Send a teleport request to a player.");
+            player.sendMessage(ChatColor.GRAY + "Usage: /tpahere <player>");
+            return;
+        }
+
+        if (args.length > 1)
+        {
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
             return;
         }
 
@@ -230,13 +242,13 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (target == null)
         {
-            player.sendMessage(ChatColor.RED + "Error: You can only send a teleport request to online players!");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can only send a teleport request to online players!");
             return;
         }
 
         if (target == player)
         {
-            player.sendMessage(ChatColor.RED + "Error: You can't teleport to yourself!");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't teleport to yourself!");
             return;
         }
 
@@ -246,7 +258,7 @@ public class TeleportCommands extends BetterCommandExecutor
         {
             if (currentRequests.get(target.getName()).getSender().equals(player.getName()))
             {
-                player.sendMessage(ChatColor.RED + "Error: You can't send multiple requests to the same player!");
+                player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't send multiple requests to the same player!");
                 return;
             }
         }
@@ -269,7 +281,7 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(ChatColor.RED + "Error: The console can't accept teleport requests!");
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't accept teleport requests!");
             return;
         }
 
@@ -277,7 +289,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (!(currentRequests.containsKey(player.getName())))
         {
-            player.sendMessage(ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
             return;
         }
         Request request = currentRequests.get(player.getName());
@@ -300,20 +312,20 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (teleportingPlayer == null)
         {
-            targetPlayer.sendMessage(ChatColor.RED + "Error: It appears that the person trying to teleport to you doesn't exist anymore.");
+            targetPlayer.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears that the person trying to teleport to you doesn't exist anymore.");
             return;
         }
 
         if (targetPlayer == null)
         {
-            teleportingPlayer.sendMessage(ChatColor.RED + "Error: It appears that the person you are trying to teleport to doesn't exist anymore.");
+            teleportingPlayer.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears that the person you are trying to teleport to doesn't exist anymore.");
             return;
         }
 
         teleportingPlayer.teleport(targetPlayer);
 
-        targetPlayer.sendMessage(ChatColor.GRAY + "Teleporting...");
-        teleportingPlayer.sendMessage(ChatColor.GRAY + "Teleporting...");
+        targetPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
+        teleportingPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
     }
 
     @BetterCommand(name = "tpdeny")
@@ -321,7 +333,7 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(ChatColor.RED + "Error: The console can't deny teleport requests!");
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't deny teleport requests!");
             return;
         }
 
@@ -329,7 +341,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (!(currentRequests.containsKey(player.getName())))
         {
-            player.sendMessage(ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
+            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
             return;
         }
         Request request = currentRequests.get(player.getName());
@@ -342,8 +354,8 @@ public class TeleportCommands extends BetterCommandExecutor
             return;
         }
 
-        rejectedPlayer.sendMessage(ChatColor.RED + player.getName() + " rejected your teleport request! :(");
-        player.sendMessage(ChatColor.GRAY + rejectedPlayer.getName() + " was rejected!");
+        rejectedPlayer.sendMessage(plugin.prefix + ChatColor.RED + player.getName() + " rejected your teleport request! :(");
+        player.sendMessage(plugin.prefix + ChatColor.GRAY + rejectedPlayer.getName() + " was rejected!");
     }
 
     @BetterCommand(name = "test")
