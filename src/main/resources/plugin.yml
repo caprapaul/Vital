@@ -11,22 +11,18 @@ commands:
     permission-message: You do not have permission to use this command!
   tpa:
     description: Send a teleport request to a player on the server.
-    aliases: [tpr, tprequest]
     permission: vital.tpa
     permission-message: You do not have permission to use this command!
   tpahere:
     description: Send a teleport invite to a player on the server.
-    aliases: [tpinv, tpinvite]
     permission: vital.tpa
     permission-message: You do not have permission to use this command!
   tpaccept:
     description: Accept a teleport request.
-    aliases: accept
     permission: vital.tpaccept
     permission-message: You do not have permission to use this command!
   tpdeny:
     description: Deny a teleport request.
-    aliases: deny
     permission: vital.tpdeny
     permission-message: You do not have permission to use this command!
   warp:
