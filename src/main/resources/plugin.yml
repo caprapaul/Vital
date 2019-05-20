@@ -41,6 +41,22 @@ commands:
     description: Delete a warp location.
     permission: vital.delwarp
     permission-message: You do not have permission to use this command!
+  home:
+    description: Takes you to your default home, or a named home.
+    permission: vital.home
+    permission-message: You do not have permission to use this command!
+  homes:
+    description: Lists all your homes and their locations.
+    permission: vital.homes
+    permission-message: You do not have permission to use this command!
+  sethome:
+    description: Sets a home where you are currently are, also use this command to move a home.
+    permission: vital.sethome
+    permission-message: You do not have permission to use this command!
+  delhome:
+    description: Deletes your default home, or a named home.
+    permission: vital.delhome
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
@@ -77,4 +93,25 @@ permissions:
     default: op
   vital.delwarp:
     description: Allows you to use the /delwarp command.
+    default: op
+
+  #Home commands
+  vital.homes.*:
+    description: Gives access to [home, homes, sethome, delhome] commands.
+    children:
+      vital.home: true
+      vital.sethome: true
+      vital.delhome: true
+      vital.homes: true
+  vital.home:
+    description: Allows you to use the /home command.
+    default: true
+  vital.homes:
+    description: Allows you to use the /homes command.
+    default: op
+  vital.sethome:
+    description: Allows you to use the /sethome command.
+    default: op
+  vital.delhome:
+    description: Allows you to use the /delhome command.
     default: op
