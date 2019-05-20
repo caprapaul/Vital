@@ -38,6 +38,12 @@ public class WarpCommands extends BetterCommandExecutor
         plugin.getWarps().set("warps", warps);
     }
 
+    private void removeWarp(Warp warp)
+    {
+        warps.remove(warp);
+        plugin.getWarps().set("warps", warps);
+    }
+
     private boolean containsName(String name, Warp returnWarp)
     {
         for(Warp warp : warps)
@@ -135,5 +141,33 @@ public class WarpCommands extends BetterCommandExecutor
         Location location = player.getLocation();
         addWarp(new Warp(name, location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
         player.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been created.");
+    }
+
+    @BetterCommand(name = "delwarp")
+    public void delwarp(CommandSender commandSender, String[] args, String commandLabel)
+    {
+        if (args.length == 0)
+        {
+            commandSender.sendMessage(plugin.prefix + "Delete a warp location.");
+            commandSender.sendMessage(ChatColor.GRAY + "Usage: /delwarp <name>");
+            return;
+        }
+
+        if (args.length > 1)
+        {
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
+            return;
+        }
+
+        String name = args[0];
+        Warp warp = new Warp();
+        if (!(containsName(name, warp)))
+        {
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Invalid warp name!");
+            return;
+        }
+
+        removeWarp(warp);
+        commandSender.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.RED + name + ChatColor.GRAY + " has been deleted.");
     }
 }

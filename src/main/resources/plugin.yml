@@ -41,6 +41,10 @@ commands:
     description: Set a warp location.
     permission: vital.setwarp
     permission-message: You do not have permission to use this command!
+  delwarp:
+    description: Delete a warp location.
+    permission: vital.delwarp
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
@@ -74,4 +78,7 @@ permissions:
     default: true
   vital.setwarp:
     description: Allows you to use the /setwarp command.
+    default: op
+  vital.delwarp:
+    description: Allows you to use the /delwarp command.
     default: op
