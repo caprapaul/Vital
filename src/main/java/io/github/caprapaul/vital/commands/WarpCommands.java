@@ -168,6 +168,12 @@ public class WarpCommands extends BetterCommandExecutor
         }
 
         removeWarp(warp);
+        if (containsName(name, warp))
+        {
+            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Warp wasn't deleted!");
+            return;
+        }
+
         commandSender.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.RED + name + ChatColor.GRAY + " has been deleted.");
     }
 }

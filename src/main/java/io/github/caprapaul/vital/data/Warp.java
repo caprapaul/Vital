@@ -83,6 +83,27 @@ public class Warp implements ConfigurationSerializable
         this.world = world;
     }
 
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == this)
+        {
+            return true;
+        }
+
+        if (!(obj instanceof Warp))
+        {
+            return false;
+        }
+
+        Warp warp = (Warp) obj;
+        return name.equals(warp.name) &&
+                world.equals(warp.world) &&
+                Double.compare(x, warp.x) == 0 &&
+                Double.compare(y, warp.y) == 0 &&
+                Double.compare(z, warp.z) == 0;
+    }
+
     public Map<String, Object> serialize()
     {
         LinkedHashMap result = new LinkedHashMap();
