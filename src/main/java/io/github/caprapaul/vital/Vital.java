@@ -63,5 +63,6 @@ public class Vital extends JavaPlugin
     public void onDisable()
     {
         toggleInitiator.disable();
+        toggleInitiator.clearListeners();
     }
 }

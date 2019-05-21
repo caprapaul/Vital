@@ -13,6 +13,16 @@ public class ToggleInitiator
         listeners.add(listener);
     }
 
+    public void removeListener(ToggleListener listener)
+    {
+        listeners.remove(listener);
+    }
+
+    public void clearListeners()
+    {
+        listeners.clear();
+    }
+
     public void enable()
     {
         for (ToggleListener l : listeners)

@@ -105,7 +105,7 @@ public class TeleportCommands extends BetterCommandExecutor
                 recipient.sendMessage(plugin.prefix + ChatColor.GOLD + sender.getName() + ChatColor.GRAY + " has sent a request to teleport to you." + ChatColor.RESET + sendTpAccept + sendTpDeny);
                 break;
         }
-        currentRequests.put(recipient.getUniqueId().toString(), new Request(sender.getUniqueId().toString(), type));
+        currentRequests.put(recipient.getUniqueId().toString(), new Request(sender.getName(), type));
     }
 
     private boolean killRequest(String key)
@@ -350,7 +350,7 @@ public class TeleportCommands extends BetterCommandExecutor
         }
         Request request = currentRequests.get(player.getUniqueId().toString());
 
-        Player rejectedPlayer = plugin.getServer().getPlayer(currentRequests.get(player.getUniqueId().toString()).getSender());
+        Player rejectedPlayer = plugin.getServer().getPlayer(request.getSender());
         currentRequests.remove(player.getUniqueId().toString());
 
         if (rejectedPlayer == null)
