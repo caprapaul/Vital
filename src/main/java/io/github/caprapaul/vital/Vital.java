@@ -1,73 +1,67 @@
 package io.github.caprapaul.vital;
 
-import io.github.caprapaul.vital.commands.TeleportCommands;
-import io.github.caprapaul.vital.commands.WarpCommands;
-import io.github.caprapaul.vital.data.Warp;
+import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.vital.commands.*;
+import io.github.caprapaul.vital.initiators.ToggleInitiator;
+import io.github.caprapaul.vital.listeners.ToggleListener;
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.reflections.Reflections;
 
-import java.io.File;
-import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.Set;
 
 public class Vital extends JavaPlugin
 {
-    static
-    {
-        ConfigurationSerialization.registerClass(Warp.class, "Warp");
-    }
-
     public String prefix = ChatColor.GOLD + "[" + ChatColor.AQUA + "V" + ChatColor.GOLD + "] " + ChatColor.RESET;
 
-    private FileConfiguration warps;
-    private File warpsFile;
-
-    public FileConfiguration getWarps()
-    {
-        return warps;
-    }
+    private ToggleInitiator toggleInitiator;
 
     private void loadCommands()
     {
-        new TeleportCommands(this);
-        new WarpCommands(this);
-    }
-
-    private void loadFiles()
-    {
-        this.warpsFile = new File(getDataFolder(), "warps.yml");
-    }
-
-    private void loadYamls()
-    {
-        this.warps = YamlConfiguration.loadConfiguration(warpsFile);
-    }
-
-    private void saveYamls()
-    {
         try
         {
-            this.warps.save(warpsFile);
+            Reflections reflections = new Reflections("io.github.caprapaul.vital.commands");
+            Set<Class<? extends BetterCommandExecutor>> commandClasses = reflections.getSubTypesOf(BetterCommandExecutor.class);
+
+            for (Class<?> commandClass: commandClasses)
+            {
+                Constructor constructor = commandClass.getConstructor(Vital.class);
+                BetterCommandExecutor commandExecutor = (BetterCommandExecutor)constructor.newInstance(this);
+                toggleInitiator.addListener(commandExecutor);
+            }
         }
-        catch (IOException e)
+        catch (NoSuchMethodException e)
         {
-            e.printStackTrace();
+            getLogger().info(Arrays.toString(e.getStackTrace()));
+        }
+        catch (IllegalAccessException e)
+        {
+            getLogger().info(Arrays.toString(e.getStackTrace()));
+        }
+        catch (InstantiationException e)
+        {
+            getLogger().info(Arrays.toString(e.getStackTrace()));
+        }
+        catch (InvocationTargetException e)
+        {
+            getLogger().info(Arrays.toString(e.getStackTrace()));
         }
     }
 
     @Override
     public void onEnable()
     {
-        loadFiles();
-        loadYamls();
+        toggleInitiator = new ToggleInitiator();
         loadCommands();
+        toggleInitiator.enable();
     }
 
     @Override
     public void onDisable()
     {
-        saveYamls();
+        toggleInitiator.disable();
     }
 }

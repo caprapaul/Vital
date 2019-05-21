@@ -21,7 +21,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
     private class Request
     {
-        public Request(String sender, RequestType type)
+        private Request(String sender, RequestType type)
         {
             this.sender = sender;
             this.type = type;
@@ -30,7 +30,7 @@ public class TeleportCommands extends BetterCommandExecutor
         private String sender;
         private RequestType type;
 
-        public String getSender()
+        private String getSender()
         {
             return sender;
         }
@@ -47,9 +47,16 @@ public class TeleportCommands extends BetterCommandExecutor
 
     public TeleportCommands(Vital plugin)
     {
+        super(plugin);
         this.plugin = plugin;
         loadCommands(this, this.plugin);
+    }
+
+    @Override
+    public void onEnable()
+    {
         loadConfig();
+
     }
 
     private void loadConfig()
@@ -76,7 +83,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (recipient.hasPermission("vital.tpaccept"))
         {
-            sendTpAccept = ChatColor.GRAY + "\nTo accept the teleport request, type " +  ChatColor.GREEN + "/tpaccept" + ChatColor.GRAY + ".";
+            sendTpAccept = ChatColor.GRAY + "\nTo accept the teleport request, type " + ChatColor.GREEN + "/tpaccept" + ChatColor.GRAY + ".";
         }
         else
         {
@@ -150,7 +157,7 @@ public class TeleportCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage(plugin.prefix +  "Send a teleport request to a player.");
+            player.sendMessage(plugin.prefix + "Send a teleport request to a player.");
             player.sendMessage(ChatColor.GRAY + "Usage: /tpa <player>");
             return;
         }

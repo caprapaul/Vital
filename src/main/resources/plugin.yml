@@ -51,6 +51,10 @@ permissions:
       vital.tpahere: true
       vital.tpaccept: true
       vital.tpdeny: true
+      vital.warp: true
+      vital.warps: true
+      vital.setwarp: true
+      vital.delwarp: true
   vital.test:
     description: Allows you to use the /test command.
     default: true
