@@ -29,24 +29,24 @@ public class WarpCommands extends BetterCommandExecutor
 
     private void loadWarps()
     {
-        this.warps = (ArrayList<Warp>)plugin.getWarps().get("warps", new ArrayList<Warp>());
+        this.warps = (ArrayList<Warp>)this.plugin.getWarps().get("warps", new ArrayList<Warp>());
     }
 
     private void addWarp(Warp warp)
     {
-        warps.add(warp);
-        plugin.getWarps().set("warps", warps);
+        this.warps.add(warp);
+        this.plugin.getWarps().set("warps", this.warps);
     }
 
     private void removeWarp(Warp warp)
     {
-        warps.remove(warp);
-        plugin.getWarps().set("warps", warps);
+        this.warps.remove(warp);
+        this.plugin.getWarps().set("warps", this.warps);
     }
 
     private boolean containsName(String name, Warp returnWarp)
     {
-        for(Warp warp : warps)
+        for(Warp warp : this.warps)
         {
             if(warp != null && warp.getName().equalsIgnoreCase(name))
             {
@@ -72,7 +72,7 @@ public class WarpCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't go anywhere!");
+            commandSender.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: The console can't go anywhere!");
             return;
         }
 
@@ -80,7 +80,7 @@ public class WarpCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage(plugin.prefix + "Set a warp location.");
+            player.sendMessage(this.plugin.prefix + "Set a warp location.");
             player.sendMessage(ChatColor.GRAY + "Usage: /setwarp <name>");
             return;
         }
@@ -89,27 +89,27 @@ public class WarpCommands extends BetterCommandExecutor
         Warp warp = new Warp();
         if (!(containsName(name, warp)))
         {
-            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: Invalid warp name!");
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: Invalid warp name!");
             return;
         }
 
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
-        player.teleport(new Location(plugin.getServer().getWorld(warp.getWorld()), warp.getX(), warp.getY(), warp.getZ()));
+        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
+        player.teleport(new Location(this.plugin.getServer().getWorld(warp.getWorld()), warp.getX(), warp.getY(), warp.getZ()));
     }
 
     @BetterCommand(name = "warps")
     public void warps(CommandSender commandSender, String[] args, String commandLabel)
     {
         String warpsString = "";
-        for (int i = 0; i < warps.size(); i++)
+        for (int i = 0; i < this.warps.size(); i++)
         {
-            warpsString += ChatColor.GOLD + warps.get(i).getName();
-            if (i < warps.size() - 1)
+            warpsString += ChatColor.GOLD + this.warps.get(i).getName();
+            if (i < this.warps.size() - 1)
             {
                 warpsString += ChatColor.GRAY + ", ";
             }
         }
-        commandSender.sendMessage(plugin.prefix + "Warps: " + warpsString);
+        commandSender.sendMessage(this.plugin.prefix + "Warps: " + warpsString);
     }
 
     @BetterCommand(name = "setwarp")
@@ -117,7 +117,7 @@ public class WarpCommands extends BetterCommandExecutor
     {
         if (!(commandSender instanceof Player))
         {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't set warps!");
+            commandSender.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: The console can't set warps!");
             return;
         }
 
@@ -125,14 +125,14 @@ public class WarpCommands extends BetterCommandExecutor
 
         if (args.length == 0)
         {
-            player.sendMessage(plugin.prefix + "Set a warp location.");
+            player.sendMessage(this.plugin.prefix + "Set a warp location.");
             player.sendMessage(ChatColor.GRAY + "Usage: /setwarp <name>");
             return;
         }
 
         if (args.length > 1)
         {
-            player.sendMessage(plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
             return;
         }
 
@@ -140,7 +140,7 @@ public class WarpCommands extends BetterCommandExecutor
 
         Location location = player.getLocation();
         addWarp(new Warp(name, location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.GREEN  + "created.");
+        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.GREEN  + "created.");
     }
 
     @BetterCommand(name = "delwarp")
@@ -148,14 +148,14 @@ public class WarpCommands extends BetterCommandExecutor
     {
         if (args.length == 0)
         {
-            commandSender.sendMessage(plugin.prefix + "Delete a warp location.");
+            commandSender.sendMessage(this.plugin.prefix + "Delete a warp location.");
             commandSender.sendMessage(ChatColor.GRAY + "Usage: /delwarp <name>");
             return;
         }
 
         if (args.length > 1)
         {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
+            commandSender.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: Too many arguments!");
             return;
         }
 
@@ -163,17 +163,17 @@ public class WarpCommands extends BetterCommandExecutor
         Warp warp = new Warp();
         if (!(containsName(name, warp)))
         {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Invalid warp name!");
+            commandSender.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: Invalid warp name!");
             return;
         }
 
         removeWarp(warp);
         if (containsName(name, warp))
         {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Warp wasn't deleted!");
+            commandSender.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: Warp wasn't deleted!");
             return;
         }
 
-        commandSender.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.RED + "deleted.");
+        commandSender.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.RED + "deleted.");
     }
 }

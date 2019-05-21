@@ -1,5 +1,6 @@
 package io.github.caprapaul.vital;
 
+import io.github.caprapaul.vital.commands.HomeCommands;
 import io.github.caprapaul.vital.commands.TeleportCommands;
 import io.github.caprapaul.vital.commands.WarpCommands;
 import io.github.caprapaul.vital.data.Warp;
@@ -23,33 +24,43 @@ public class Vital extends JavaPlugin
 
     private FileConfiguration warps;
     private File warpsFile;
-
     public FileConfiguration getWarps()
     {
-        return warps;
+        return this.warps;
+    }
+
+    private FileConfiguration homes;
+    private File homesFile;
+    public FileConfiguration getPlayerHomes()
+    {
+        return this.homes;
     }
 
     private void loadCommands()
     {
         new TeleportCommands(this);
         new WarpCommands(this);
+        new HomeCommands(this);
     }
 
     private void loadFiles()
     {
         this.warpsFile = new File(getDataFolder(), "warps.yml");
+        this.homesFile = new File(getDataFolder(), "homes.yml");
     }
 
     private void loadYamls()
     {
-        this.warps = YamlConfiguration.loadConfiguration(warpsFile);
+        this.warps = YamlConfiguration.loadConfiguration(this.warpsFile);
+        this.homes = YamlConfiguration.loadConfiguration(this.homesFile);
     }
 
     private void saveYamls()
     {
         try
         {
-            this.warps.save(warpsFile);
+            this.warps.save(this.warpsFile);
+            this.homes.save(this.homesFile);
         }
         catch (IOException e)
         {
