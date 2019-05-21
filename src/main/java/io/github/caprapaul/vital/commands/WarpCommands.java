@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,8 +94,8 @@ public class WarpCommands extends BetterCommandExecutor
             return;
         }
 
-        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
-        player.teleport(new Location(this.plugin.getServer().getWorld(warp.getWorld()), warp.getX(), warp.getY(), warp.getZ()));
+        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
+        player.teleport(warp.toLocation(plugin));
     }
 
     @BetterCommand(name = "warps")

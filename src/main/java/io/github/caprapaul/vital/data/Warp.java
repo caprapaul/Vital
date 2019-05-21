@@ -1,7 +1,9 @@
 package io.github.caprapaul.vital.data;
 
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.SerializableAs;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -22,6 +24,15 @@ public class Warp implements ConfigurationSerializable
         this.x = 0;
         this.y = 0;
         this.z = 0;
+    }
+
+    public Warp(String name, Location location)
+    {
+        this.name = name;
+        this.world = location.getWorld().getName();
+        this.x = location.getX();
+        this.y = location.getY();
+        this.z = location.getZ();
     }
 
     public Warp(String name, String world, double x, double y, double z)
@@ -102,6 +113,11 @@ public class Warp implements ConfigurationSerializable
                 Double.compare(x, warp.x) == 0 &&
                 Double.compare(y, warp.y) == 0 &&
                 Double.compare(z, warp.z) == 0;
+    }
+
+    public Location toLocation(JavaPlugin plugin)
+    {
+        return new Location(plugin.getServer().getWorld(world), x, y,z);
     }
 
     public Map<String, Object> serialize()
