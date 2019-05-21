@@ -41,14 +41,12 @@ public class TeleportCommands extends BetterCommandExecutor
         }
     }
 
-    private final Vital plugin;
     private Map<String, Long> tpaCooldowns = new HashMap<String, Long>();
     private Map<String, Request> currentRequests = new HashMap<String, Request>();
 
     public TeleportCommands(Vital plugin)
     {
         super(plugin);
-        this.plugin = plugin;
         loadCommands(this, this.plugin);
     }
 
@@ -56,7 +54,6 @@ public class TeleportCommands extends BetterCommandExecutor
     public void onEnable()
     {
         loadConfig();
-
     }
 
     private void loadConfig()
