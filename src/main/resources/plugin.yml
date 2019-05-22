@@ -62,7 +62,7 @@ permissions:
       vital.setwarp: true
       vital.delwarp: true
       vital.back: true
-      bital.back.overridecooldown: true
+      vital.back.overridecooldown: true
   vital.test:
     description: Allows you to use the /test command.
     default: true
