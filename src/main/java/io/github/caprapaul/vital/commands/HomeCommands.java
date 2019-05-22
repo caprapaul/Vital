@@ -9,6 +9,10 @@ import org.bukkit.ChatColor;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -16,12 +20,17 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.PluginManager;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class HomeCommands extends BetterCommandExecutor implements Listener
 {
     private final Vital plugin;
+
+    private File homesFile;
+    private FileConfiguration homes;
 
     // { HashMap | Key: UUID, Value: { HashMap | Key: Home name, Value: Warp class } }
     private HashMap<String, HashMap<String, Warp>> playerHomes;
@@ -31,6 +40,18 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         this.plugin = plugin;
         this.playerHomes = new HashMap<String, HashMap<String, Warp>>();
         loadCommands(this, this.plugin);
+
+        this.homesFile = new File(this.plugin.getDataFolder(), "homes.yml");
+        this.homes = YamlConfiguration.loadConfiguration(this.homesFile);
+
+        try
+        {
+            this.homes.save(this.homesFile);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
 
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         pluginManager.registerEvents(this, this.plugin);
@@ -52,6 +73,14 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         }
     }
 
+    private void unloadMultiplePlayersHomes(Iterable<Player> players)
+    {
+        for (Player player : players)
+        {
+            unloadPlayerHomes(player);
+        }
+    }
+
     private void loadPlayerHomes(Player player)
     {
         // Get player UUID
@@ -61,10 +90,16 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
          Get a list of all the homes that belong to the player
          where the player UUID is the key in the YAML
         */
-        @SuppressWarnings("unchecked")
-        HashMap<String, Warp> homesArrayList = (HashMap<String, Warp>)plugin
-                .getPlayerHomes()
-                .get("homes." + playerUUID, new HashMap<String, Warp>());
+        plugin.getLogger().info(playerUUID);
+
+        ConfigurationSection configurationSection = homes.getConfigurationSection("homes." + playerUUID);
+
+        if (configurationSection == null)
+        {
+            plugin.getLogger().info("config nulll");
+            return;
+        }
+        HashMap<String, Object> homeObjects = (HashMap<String, Object>) configurationSection.getValues(false);
 
         HashMap<String, Warp> homes = new HashMap<String, Warp>();
         /*
@@ -72,11 +107,10 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
          Add them to the hash map with their names
          This allows for name key access instead of iterating the warps each time looking for a name.
         */
-        if (homesArrayList != null) {
-            for (Warp home: homesArrayList)
-            {
-                homes.put(home.getName(), home);
-            }
+        for (Object obj : homeObjects.values())
+        {
+            Warp home = (Warp) obj;
+            homes.put(home.getName(), home);
         }
 
         // Add the loaded; or newly created, HashMap to the player home HashMap
@@ -87,19 +121,36 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
     private void unloadPlayerHomes(Player player)
     {
         String playerUUID = player.getUniqueId().toString();
-        this.plugin.getPlayerHomes().set("homes."+playerUUID, this.playerHomes.get(playerUUID));
+
+        if (!(playerHomes.containsKey(playerUUID)))
+        {
+            plugin.getLogger().info(playerUUID + " has no homes to unload.");
+            return;
+        }
+
+        ConfigurationSection configurationSection = homes.getConfigurationSection("homes." + playerUUID);
+
+        if (configurationSection == null)
+        {
+            homes.createSection("homes." + playerUUID, this.playerHomes.get(playerUUID));
+            return;
+        }
+
+        for (Warp home: playerHomes.get(playerUUID).values())
+        {
+            configurationSection.set(home.getName(), home);
+        }
+
         this.playerHomes.remove(playerUUID);
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onPlayerJoin(PlayerJoinEvent event)
     {
         this.loadPlayerHomes(event.getPlayer());
     }
 
     @EventHandler
-    @SuppressWarnings("unused")
     public void onPlayerLeave(PlayerQuitEvent event)
     {
         this.unloadPlayerHomes(event.getPlayer());
@@ -111,14 +162,41 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
     */
     private void addHome(Player player, Warp home)
     {
-        HashMap<String, Warp> homes = this.playerHomes.get(player.getUniqueId().toString());
+        HashMap<String, Warp> homes = new HashMap<String, Warp>();
+
+        if (this.playerHomes.containsKey(player.getUniqueId().toString()))
+        {
+            homes = this.playerHomes.get(player.getUniqueId().toString());
+        }
+        else
+        {
+            this.playerHomes.put(player.getUniqueId().toString(), homes);
+        }
+
         homes.put(home.getName(), home);
+
+        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Set home " + ChatColor.GOLD + home.getName() + ChatColor.GRAY + ".");
     }
 
     private void removeHome(Player player, String homeName)
     {
+        if (!(this.playerHomes.containsKey(player.getUniqueId().toString())))
+        {
+            player.sendMessage(plugin.prefix + ChatColor.RED + "You don't have any homes!");
+            return;
+        }
+
         HashMap<String, Warp> homes = this.playerHomes.get(player.getUniqueId().toString());
+
+        if (!(homes.containsKey(homeName)))
+        {
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "Home \"" + homeName + "\" doesn't exist!");
+            return;
+        }
+
         homes.remove(homeName);
+
+        player.sendMessage(this.plugin.prefix + "Deleted home " + homeName + ".");
     }
 
     /*
@@ -136,7 +214,12 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
         // Get the UUID of the player who sent the command
         String playerUUID = player.getUniqueId().toString();
-        HashMap<String, Warp> playerHomes = this.playerHomes.get(playerUUID);
+
+        if (!(playerHomes.containsKey(playerUUID)))
+        {
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "You don't have any homes!");
+            return;
+        }
 
         Warp target;
 
@@ -144,18 +227,19 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         {
             // Default home
             case 0:
-                // Set the target location as the "default" home
                 target = this.playerHomes.get(playerUUID).get("default");
                 break;
 
             // Named home
             case 1:
+            {
                 target = this.playerHomes.get(playerUUID).get(args[0]);
                 break;
+            }
 
             // Error: too many arguments
             default:
-                player.sendMessage(this.plugin.prefix + ChatColor.RED + "Too many arguments! Usage /home <home name>");
+                player.sendMessage(this.plugin.prefix + ChatColor.RED + "Too many arguments! Usage /home <home_name>");
                 return;
         }
 
@@ -218,13 +302,11 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             // Set the player's default home
             case 0:
                 this.addHome(player, new Warp("default", player.getLocation()));
-                player.sendMessage(this.plugin.prefix + "Set default home.");
                 break;
 
             // Set a named home
             case 1:
                 this.addHome(player, new Warp(args[0], player.getLocation()));
-                player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Set home" + ChatColor.GOLD + args[0] + ChatColor.GRAY + ".");
                 break;
 
             // Error: Too many arguments
@@ -252,13 +334,11 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             // Delete the default home
             case 0:
                 this.removeHome(player, "default");
-                player.sendMessage(this.plugin.prefix + "Deleted home default.");
                 break;
 
             // Delete a named home
             case 1:
                 this.removeHome(player, args[0]);
-                player.sendMessage(this.plugin.prefix + "Deleted home " + args[0] + ".");
                 break;
 
             // Error: Too many arguments
@@ -266,7 +346,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
                 player.sendMessage(this.plugin.prefix + ChatColor.RED + "Too many arguments! Usage /homes <page number>");
                 return;
         }
-        this.removeHome(player, args[0]);
     }
 
     public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args)
