@@ -9,47 +9,82 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class WarpCommands extends BetterCommandExecutor
 {
-    private final Vital plugin;
+    private FileConfiguration warpsConfig;
+    private File warpsFile;
+
     private ArrayList<Warp> warps;
 
     public WarpCommands(Vital plugin)
     {
-        this.plugin = plugin;
-        this.warps = new ArrayList<Warp>();
+        super(plugin);
         loadCommands(this, this.plugin);
+    }
+
+    @Override
+    public void onEnable()
+    {
+        ConfigurationSerialization.registerClass(Warp.class, "Warp");
+
+        this.warpsFile = new File(plugin.getDataFolder(), "warps.yml");
+        this.warpsConfig = YamlConfiguration.loadConfiguration(warpsFile);
+        this.warps = new ArrayList<Warp>();
         loadWarps();
+    }
+
+    @Override
+    public void onDisable()
+    {
+        saveWarps();
+    }
+
+    private void saveWarps()
+    {
+        try
+        {
+            this.warpsConfig.save(warpsFile);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
     }
 
     private void loadWarps()
     {
-        this.warps = (ArrayList<Warp>)this.plugin.getWarps().get("warps", new ArrayList<Warp>());
+        this.warps = (ArrayList<Warp>) warpsConfig.get("warps", new ArrayList<Warp>());
     }
 
     private void addWarp(Warp warp)
     {
-        this.warps.add(warp);
-        this.plugin.getWarps().set("warps", this.warps);
+        warps.add(warp);
+        warpsConfig.set("warps", warps);
     }
 
     private void removeWarp(Warp warp)
     {
-        this.warps.remove(warp);
-        this.plugin.getWarps().set("warps", this.warps);
+        warps.remove(warp);
+        warpsConfig.set("warps", warps);
     }
 
     private boolean containsName(String name, Warp returnWarp)
     {
-        for(Warp warp : this.warps)
+        for (Warp warp : warps)
         {
-            if(warp != null && warp.getName().equalsIgnoreCase(name))
+            if (warp != null && warp.getName().equalsIgnoreCase(name))
             {
                 returnWarp.setName(warp.getName());
                 returnWarp.setWorld(warp.getWorld());
@@ -141,7 +176,7 @@ public class WarpCommands extends BetterCommandExecutor
 
         Location location = player.getLocation();
         addWarp(new Warp(name, location.getWorld().getName(), location.getX(), location.getY(), location.getZ()));
-        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.GREEN  + "created.");
+        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Warp " + ChatColor.GOLD + name + ChatColor.GRAY + " has been " + ChatColor.GREEN + "created.");
     }
 
     @BetterCommand(name = "delwarp")

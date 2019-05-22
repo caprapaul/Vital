@@ -41,6 +41,10 @@ commands:
     description: Delete a warp location.
     permission: vital.delwarp
     permission-message: You do not have permission to use this command!
+  back:
+    description: Teleport to the previous location.
+    permission: vital.back
+    permission-message: You do not have permission to use this command!
   home:
     description: Takes you to your default home, or a named home.
     permission: vital.home
@@ -64,19 +68,32 @@ permissions:
     children:
       vital.test: true
       vital.tpa: true
+      vital.tpa.overridecooldown: true
       vital.tpahere: true
+      vital.tpahere.overridecooldown: true
       vital.tpaccept: true
       vital.tpdeny: true
-      vital.homes.*: true
+      vital.warp: true
+      vital.warps: true
+      vital.setwarp: true
+      vital.delwarp: true
+      vital.back: true
+      vital.back.overridecooldown: true
   vital.test:
     description: Allows you to use the /test command.
     default: true
   vital.tpa:
     description: Allows you to use the /tpa command.
     default: true
+  vital.tpa.overridecooldown:
+    description: Allows you to bypass /tpa cooldown.
+    default: op
   vital.tpahere:
     description: Allows you to use the /tpahere command.
     default: true
+  vital.tpahere.overridecooldown:
+    description: Allows you to bypass /tpahere cooldown.
+    default: op
   vital.tpaccept:
     description: Allows you to use the /tpaccept command.
     default: true
@@ -95,6 +112,13 @@ permissions:
   vital.delwarp:
     description: Allows you to use the /delwarp command.
     default: op
+  vital.back:
+    description: Allows you to use the /back command.
+    default: true
+  vital.back.overridecooldown:
+    description: Allows you to bypass /back cooldown.
+    default: op
+
 
   #Home commands
   vital.homes.*:

@@ -1,5 +1,7 @@
 package io.github.caprapaul.bettercommandexecutor;
 
+import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vital.listeners.ToggleListener;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -8,9 +10,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public abstract class BetterCommandExecutor implements CommandExecutor
+public abstract class BetterCommandExecutor implements CommandExecutor, ToggleListener
 {
-    protected void loadCommands(Object object, JavaPlugin plugin)
+    protected final Vital plugin;
+
+    public BetterCommandExecutor(Vital plugin)
+    {
+        this.plugin = plugin;
+    }
+
+    public void onEnable() {}
+
+    public void onDisable() {}
+
+    protected void loadCommands(Object object, Vital plugin)
     {
         Class<?> clazz = object.getClass();
         for (Method method : clazz.getDeclaredMethods())

@@ -116,7 +116,7 @@ public class Warp implements ConfigurationSerializable
 
     public Location toLocation(JavaPlugin plugin)
     {
-        return new Location(plugin.getServer().getWorld(world), x, y,z);
+        return new Location(plugin.getServer().getWorld(world), x, y, z);
     }
 
     public Map<String, Object> serialize()
@@ -140,27 +140,27 @@ public class Warp implements ConfigurationSerializable
         double y = 0.0D;
         double z = 0.0D;
 
-        if(args.containsKey("name"))
+        if (args.containsKey("name"))
         {
             name = (String) args.get("name");
         }
 
-        if(args.containsKey("world"))
+        if (args.containsKey("world"))
         {
             world = (String) args.get("world");
         }
 
-        if(args.containsKey("x"))
+        if (args.containsKey("x"))
         {
             x = (Double) args.get("x");
         }
 
-        if(args.containsKey("y"))
+        if (args.containsKey("y"))
         {
             y = (Double) args.get("y");
         }
 
-        if(args.containsKey("z"))
+        if (args.containsKey("z"))
         {
             z = (Double) args.get("z");
         }
