@@ -27,8 +27,6 @@ import java.util.HashMap;
 
 public class HomeCommands extends BetterCommandExecutor implements Listener
 {
-    private final Vital plugin;
-
     private File homesFile;
     private FileConfiguration homes;
 
@@ -37,21 +35,17 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
     public HomeCommands(Vital plugin)
     {
-        this.plugin = plugin;
+        super(plugin);
+    }
+
+    @Override
+    public void onEnable()
+    {
         this.playerHomes = new HashMap<String, HashMap<String, Warp>>();
         loadCommands(this, this.plugin);
 
         this.homesFile = new File(this.plugin.getDataFolder(), "homes.yml");
         this.homes = YamlConfiguration.loadConfiguration(this.homesFile);
-
-        try
-        {
-            this.homes.save(this.homesFile);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
 
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         pluginManager.registerEvents(this, this.plugin);
@@ -63,6 +57,23 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         @SuppressWarnings("unchecked")
         Iterable<Player> onlinePlayers = (Iterable<Player>) Bukkit.getServer().getOnlinePlayers();
         this.loadMultiplePlayersHomes(onlinePlayers);
+    }
+
+    @Override
+    public void onDisable()
+    {
+        @SuppressWarnings("unchecked")
+        Iterable<Player> onlinePlayers = (Iterable<Player>) Bukkit.getServer().getOnlinePlayers();
+        this.unloadMultiplePlayersHomes(onlinePlayers);
+
+        try
+        {
+            this.homes.save(this.homesFile);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void loadMultiplePlayersHomes(Iterable<Player> players)
@@ -90,13 +101,11 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
          Get a list of all the homes that belong to the player
          where the player UUID is the key in the YAML
         */
-        plugin.getLogger().info(playerUUID);
 
         ConfigurationSection configurationSection = homes.getConfigurationSection("homes." + playerUUID);
 
         if (configurationSection == null)
         {
-            plugin.getLogger().info("config nulll");
             return;
         }
         HashMap<String, Object> homeObjects = (HashMap<String, Object>) configurationSection.getValues(false);
@@ -124,7 +133,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
         if (!(playerHomes.containsKey(playerUUID)))
         {
-            plugin.getLogger().info(playerUUID + " has no homes to unload.");
             return;
         }
 
@@ -180,13 +188,14 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
     private void removeHome(Player player, String homeName)
     {
-        if (!(this.playerHomes.containsKey(player.getUniqueId().toString())))
+        String playerUUID = player.getUniqueId().toString();
+        if (!(this.playerHomes.containsKey(playerUUID)))
         {
             player.sendMessage(plugin.prefix + ChatColor.RED + "You don't have any homes!");
             return;
         }
 
-        HashMap<String, Warp> homes = this.playerHomes.get(player.getUniqueId().toString());
+        HashMap<String, Warp> homes = this.playerHomes.get(playerUUID);
 
         if (!(homes.containsKey(homeName)))
         {
@@ -195,6 +204,13 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         }
 
         homes.remove(homeName);
+
+        ConfigurationSection configurationSection = this.homes.getConfigurationSection("homes." + playerUUID);
+
+        if (configurationSection != null)
+        {
+            configurationSection.set(homeName, null);
+        }
 
         player.sendMessage(this.plugin.prefix + "Deleted home " + homeName + ".");
     }
