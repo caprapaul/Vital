@@ -94,8 +94,8 @@ public class WarpCommands extends BetterCommandExecutor
             return;
         }
 
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
-        player.teleport(warp.toLocation(plugin));
+        player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
+        player.teleport(warp.toLocation(this.plugin));
     }
 
     @BetterCommand(name = "warps")
