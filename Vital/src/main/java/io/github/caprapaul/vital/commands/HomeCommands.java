@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+@SuppressWarnings("unused")
 public class HomeCommands extends BetterCommandExecutor implements Listener
 {
     private File homesFile;
@@ -69,8 +69,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         try
         {
             this.homes.save(this.homesFile);
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             e.printStackTrace();
         }
@@ -144,7 +143,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             return;
         }
 
-        for (Warp home: playerHomes.get(playerUUID).values())
+        for (Warp home : playerHomes.get(playerUUID).values())
         {
             configurationSection.set(home.getName(), home);
         }
@@ -175,8 +174,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         if (this.playerHomes.containsKey(player.getUniqueId().toString()))
         {
             homes = this.playerHomes.get(player.getUniqueId().toString());
-        }
-        else
+        } else
         {
             this.playerHomes.put(player.getUniqueId().toString(), homes);
         }
@@ -222,7 +220,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         /home <home name>
     */
     @BetterCommand(name = "home")
-    @SuppressWarnings("unused")
     public void home(CommandSender commandSender, String[] args, String commandLabel)
     {
         // Get the player from commandSender
@@ -279,19 +276,57 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         /homes <page number>
     */
     @BetterCommand(name = "homes")
-    @SuppressWarnings("unused")
     public void homes(CommandSender commandSender, String[] args, String commandLabel)
     {
         Player player = (Player) commandSender;
+        String playerUUID = player.getUniqueId().toString();
+        HashMap<String, Warp> playerHomes = this.playerHomes.get(playerUUID);
+
+        String output = "";
+        int pageCount = 10;
+        int homeCount = playerHomes.size();
+
+        if (homeCount == 0)
+        {
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "You have no homes.\nUse " + ChatColor.GOLD + "/sethome" + ChatColor.GRAY + "to set a home!");
+        }
+
+        ArrayList<Warp> homeArray = new ArrayList<Warp>(playerHomes.values());
 
         switch (args.length)
         {
             // Show the first page of the player's homes
             case 0:
+                output += this.plugin.prefix + ChatColor.GRAY + "Homes page: 0/" + (int) Math.ceil(homeArray.size() / pageCount);
+                for (int i = 0; i < pageCount && i < homeArray.size(); i++)
+                {
+                    output += "\n" + this.plugin.prefix + ChatColor.GRAY + "Name: " + ChatColor.GOLD + homeArray.get(i).getName();
+                }
+                player.sendMessage(output);
                 break;
 
             // Show the selected page of the player's homes
             case 1:
+                int startInt;
+                try
+                {
+                    startInt = pageCount * Integer.parseInt(args[0]);
+                } catch (NumberFormatException e)
+                {
+                    player.sendMessage(this.plugin.prefix + ChatColor.RED + "Home page must be a number.");
+                    return;
+                }
+                if (startInt < 0)
+                {
+                    startInt = 0;
+                }
+                output += this.plugin.prefix + ChatColor.GRAY + "Homes page: " + args[0] + "/" + (int) Math.ceil(homeArray.size() / pageCount);
+                for (int i = startInt; i < startInt + pageCount && i < homeArray.size(); i++)
+                {
+                    System.out.println(i);
+                    output += "\n" + this.plugin.prefix + ChatColor.GRAY + "Name: " + ChatColor.GOLD + homeArray.get(i).getName();
+                }
+                player.sendMessage(output);
                 break;
 
             // Error: Too many arguments
@@ -308,7 +343,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         /sethome <home name>
     */
     @BetterCommand(name = "sethome")
-    @SuppressWarnings("unused")
     public void setHome(CommandSender commandSender, String[] args, String commandLabel)
     {
         Player player = (Player) commandSender;
@@ -339,7 +373,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         /delhome <home name>
     */
     @BetterCommand(name = "delhome")
-    @SuppressWarnings("unused")
     public void delHome(CommandSender commandSender, String[] args, String commandLabel)
     {
         // Get the player
@@ -360,7 +393,6 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             // Error: Too many arguments
             default:
                 player.sendMessage(this.plugin.prefix + ChatColor.RED + "Too many arguments! Usage /homes <page number>");
-                return;
         }
     }
 
