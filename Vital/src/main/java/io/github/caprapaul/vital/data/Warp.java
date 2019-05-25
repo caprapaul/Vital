@@ -43,7 +43,6 @@ public class Warp implements ConfigurationSerializable
         this.y = y;
         this.z = z;
     }
-
     public String getName()
     {
         return name;
