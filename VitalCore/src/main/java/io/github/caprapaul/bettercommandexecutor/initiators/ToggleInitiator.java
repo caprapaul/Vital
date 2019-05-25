@@ -1,6 +1,6 @@
-package io.github.caprapaul.vital.initiators;
+package io.github.caprapaul.bettercommandexecutor.initiators;
 
-import io.github.caprapaul.vital.listeners.ToggleListener;
+import io.github.caprapaul.bettercommandexecutor.listeners.ToggleListener;
 
 import java.util.ArrayList;
 

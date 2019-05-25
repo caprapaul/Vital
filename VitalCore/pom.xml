@@ -5,10 +5,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.github.caprapaul</groupId>
-    <artifactId>Vital</artifactId>
+    <artifactId>VitalCore</artifactId>
     <version>1.0-SNAPSHOT</version>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <configuration>
+                    <minimizeJar>true</minimizeJar>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -35,11 +51,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>io.github.caprapaul</groupId>
-            <artifactId>VitalCore</artifactId>
-            <version>1.0-SNAPSHOT</version>
-            <scope>provided</scope>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>LATEST</version>
         </dependency>
     </dependencies>
-
 </project>

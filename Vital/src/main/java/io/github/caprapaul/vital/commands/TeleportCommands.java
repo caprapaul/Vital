@@ -2,7 +2,9 @@ package io.github.caprapaul.vital.commands;
 
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -11,6 +13,7 @@ import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.Map;
 
+@BetterExecutor
 public class TeleportCommands extends BetterCommandExecutor
 {
     private enum RequestType
@@ -44,7 +47,7 @@ public class TeleportCommands extends BetterCommandExecutor
     private Map<String, Long> tpaCooldowns = new HashMap<String, Long>();
     private Map<String, Request> currentRequests = new HashMap<String, Request>();
 
-    public TeleportCommands(Vital plugin)
+    public TeleportCommands(VitalCore plugin)
     {
         super(plugin);
         loadCommands(this, this.plugin);

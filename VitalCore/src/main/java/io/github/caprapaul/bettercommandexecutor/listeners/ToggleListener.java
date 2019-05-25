@@ -1,4 +1,4 @@
-package io.github.caprapaul.vital.listeners;
+package io.github.caprapaul.bettercommandexecutor.listeners;
 
 public interface ToggleListener
 {

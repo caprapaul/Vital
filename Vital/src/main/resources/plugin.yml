@@ -2,6 +2,7 @@ name: Vital
 version: 1.0
 main: io.github.caprapaul.vital.Vital
 api-version: 1.14
+depend: [VitalCore]
 commands:
   test:
     aliases: [test1, test2]
