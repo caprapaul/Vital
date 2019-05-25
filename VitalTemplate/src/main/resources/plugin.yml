@@ -1,0 +1,21 @@
+name: VitalTemplate
+version: 1.0
+main: io.github.caprapaul.vitaltemplate.VitalTemplate
+api-version: 1.14
+depend: [VitalCore]
+commands:
+  test:
+    aliases: [test1, test2]
+    description: This is a demo command.
+    usage: /test
+    permission: vital.test
+    permission-message: You do not have permission to use this command!
+
+permissions:
+  vital.*:
+    description: Gives access to all vital commands.
+    children:
+      vital.test: true
+  vital.test:
+    description: Allows you to use the /test command.
+    default: true
