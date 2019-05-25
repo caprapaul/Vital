@@ -49,6 +49,10 @@ commands:
     description: Sets health to full
     permission: vital.heal
     permission-message: You do not have permission to use this command!
+  feed:
+    description: Sets hunger to full
+    permission: vital.feed
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
@@ -109,4 +113,7 @@ permissions:
     default: op
   vital.heal:
     description: Allows you to use the /heal command
+    default: op
+  vital.feed:
+    description: Allows you to use the /feed command
     default: op
