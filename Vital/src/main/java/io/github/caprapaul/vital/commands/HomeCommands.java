@@ -2,8 +2,10 @@ package io.github.caprapaul.vital.commands;
 
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.*;
 import io.github.caprapaul.vital.data.Warp;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 @SuppressWarnings("unused")
+@BetterExecutor
 public class HomeCommands extends BetterCommandExecutor implements Listener
 {
     private File homesFile;
@@ -33,7 +36,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
     // { HashMap | Key: UUID, Value: { HashMap | Key: Home name, Value: Warp class } }
     private HashMap<String, HashMap<String, Warp>> playerHomes;
 
-    public HomeCommands(Vital plugin)
+    public HomeCommands(VitalCore plugin)
     {
         super(plugin);
     }
