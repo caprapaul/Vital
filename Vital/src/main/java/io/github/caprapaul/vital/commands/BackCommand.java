@@ -2,7 +2,9 @@ package io.github.caprapaul.vital.commands;
 
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -17,9 +19,10 @@ import org.bukkit.plugin.PluginManager;
 
 import java.util.HashMap;
 
+@BetterExecutor
 public class BackCommand extends BetterCommandExecutor implements Listener
 {
-    public BackCommand(Vital plugin)
+    public BackCommand(VitalCore plugin)
     {
         super(plugin);
         loadCommands(this, this.plugin);

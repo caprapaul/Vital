@@ -1,0 +1,4 @@
+name: VitalCore
+version: 1.0
+main: io.github.caprapaul.vitalcore.VitalCore
+api-version: 1.14
