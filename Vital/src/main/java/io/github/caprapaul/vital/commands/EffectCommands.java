@@ -2,15 +2,20 @@ package io.github.caprapaul.vital.commands;
 
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+@BetterExecutor
 public class EffectCommands extends BetterCommandExecutor
 {
-    public EffectCommands(Vital plugin)
+    private static final int MAX_HEALTH = 20;
+    
+    public EffectCommands(VitalCore plugin)
     {
         super(plugin);
         loadCommands(this, this.plugin);
@@ -32,7 +37,7 @@ public class EffectCommands extends BetterCommandExecutor
         }
 
         Player player = (Player) commandSender;
-        player.setHealth(10);
+        player.setHealth(MAX_HEALTH);
     }
 
     @BetterCommand(name = "feed")
@@ -45,6 +50,6 @@ public class EffectCommands extends BetterCommandExecutor
         }
 
         Player player = (Player) commandSender;
-        player.setFoodLevel(10);
+        player.setFoodLevel(MAX_HEALTH);
     }
 }
