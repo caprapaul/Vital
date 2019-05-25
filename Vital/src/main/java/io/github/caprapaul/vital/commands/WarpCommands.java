@@ -2,8 +2,10 @@ package io.github.caprapaul.vital.commands;
 
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
+import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.Vital;
 import io.github.caprapaul.vital.data.Warp;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -13,13 +15,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
+@BetterExecutor
 public class WarpCommands extends BetterCommandExecutor
 {
     private FileConfiguration warpsConfig;
@@ -27,7 +28,7 @@ public class WarpCommands extends BetterCommandExecutor
 
     private ArrayList<Warp> warps;
 
-    public WarpCommands(Vital plugin)
+    public WarpCommands(VitalCore plugin)
     {
         super(plugin);
         loadCommands(this, this.plugin);

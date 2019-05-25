@@ -1,8 +1,8 @@
-package io.github.caprapaul.vital;
+package io.github.caprapaul.vitaltemplate;
 
 import io.github.caprapaul.vitalcore.VitalCore;
 
-public class Vital extends VitalCore
+public class VitalTemplate extends VitalCore
 {
 
     @Override

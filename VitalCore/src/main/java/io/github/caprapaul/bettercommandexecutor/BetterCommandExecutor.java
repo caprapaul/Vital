@@ -1,20 +1,19 @@
 package io.github.caprapaul.bettercommandexecutor;
 
-import io.github.caprapaul.vital.Vital;
-import io.github.caprapaul.vital.listeners.ToggleListener;
+import io.github.caprapaul.bettercommandexecutor.listeners.ToggleListener;
+import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public abstract class BetterCommandExecutor implements CommandExecutor, ToggleListener
 {
-    protected final Vital plugin;
+    protected final VitalCore plugin;
 
-    public BetterCommandExecutor(Vital plugin)
+    public BetterCommandExecutor(VitalCore plugin)
     {
         this.plugin = plugin;
     }
@@ -23,7 +22,7 @@ public abstract class BetterCommandExecutor implements CommandExecutor, ToggleLi
 
     public void onDisable() {}
 
-    protected void loadCommands(Object object, Vital plugin)
+    protected void loadCommands(Object object, VitalCore plugin)
     {
         Class<?> clazz = object.getClass();
         for (Method method : clazz.getDeclaredMethods())
