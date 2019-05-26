@@ -8,11 +8,26 @@ commands:
     description: Changes your nickname
     permission: vital.chat.nick
     permission-message: You do not have permission to use this command!
+  setnick:
+    description: Changes a users nickname
+    permission: vital.chat.setnick
+    permission-message: You do not have permission to use this command!
+  chatcolor:
+    description: Changes your chat color
+    permission: vital.chat.chatcolor
+    permission-message: You do not have permission to use this command!
 permissions:
   vital.chat.*:
     description: Gives access to all vital chat commands.
     children:
       vital.chat.nick: true
+      vital.chat.chatcolor: true
   vital.chat.nick:
     description: Allows you to use the /nick command.
+    default: true
+  vital.chat.setnick:
+    description: Allows you to use the /setnick command.
+    default: op
+  vital.chat.chatcolor:
+    description: Allows you to use the /chatcolor command.
     default: true
