@@ -54,6 +54,14 @@ commands:
     description: Lists all your homes and their locations.
     permission: vital.homes
     permission-message: You do not have permission to use this command!
+  loadhomes:
+    description: Loads homes from file.
+    permission: vital.loadhomes
+    permission-message: You do not have permission to use this command!
+  savehomes:
+    description: Saves homes to file.
+    permission: vital.savehomes
+    permission-message: You do not have permission to use this command!
   sethome:
     description: Sets a home where you are currently are, also use this command to move a home.
     permission: vital.sethome
@@ -149,6 +157,12 @@ permissions:
   vital.homes:
     description: Allows you to use the /homes command.
     default: true
+  vital.loadhomes:
+    description: Allows you to use the /loadhomes command.
+    default: op
+  vital.savehomes:
+    description: Allows you to use the /savehomes command.
+    default: op
   vital.sethome:
     description: Allows you to use the /sethome command.
     default: true

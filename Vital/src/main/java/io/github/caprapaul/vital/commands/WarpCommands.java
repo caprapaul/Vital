@@ -3,6 +3,7 @@ package io.github.caprapaul.vital.commands;
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
+import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.Vital;
 import io.github.caprapaul.vital.data.Warp;
 import io.github.caprapaul.vitalcore.VitalCore;
@@ -104,15 +105,9 @@ public class WarpCommands extends BetterCommandExecutor
         return false;
     }
 
-    @BetterCommand(name = "warp")
+    @BetterCommand(name = "warp", target = CommandTarget.PLAYER)
     public void warp(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't go anywhere!");
-            return;
-        }
-
         Player player = (Player) commandSender;
 
         if (args.length == 0)
@@ -149,15 +144,9 @@ public class WarpCommands extends BetterCommandExecutor
         commandSender.sendMessage(plugin.prefix + "Warps: " + warpsString);
     }
 
-    @BetterCommand(name = "setwarp")
+    @BetterCommand(name = "setwarp", target = CommandTarget.PLAYER)
     public void setwarp(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't set warps!");
-            return;
-        }
-
         Player player = (Player) commandSender;
 
         if (args.length == 0)
