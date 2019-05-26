@@ -10,4 +10,6 @@ import java.lang.annotation.Target;
 public @interface BetterCommand
 {
     String name();
+    int target() default (CommandTarget.PLAYER | CommandTarget.CONSOLE | CommandTarget.COMMAND_BLOCK);
 }
+

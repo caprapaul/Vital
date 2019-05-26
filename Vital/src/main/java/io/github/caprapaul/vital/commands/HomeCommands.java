@@ -3,6 +3,7 @@ package io.github.caprapaul.vital.commands;
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
+import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.*;
 import io.github.caprapaul.vital.data.Warp;
 import io.github.caprapaul.vitalcore.VitalCore;
@@ -44,11 +45,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
     @Override
     public void onEnable()
     {
-        this.playerHomes = new HashMap<String, HashMap<String, Warp>>();
         loadCommands(this, this.plugin);
-
-        this.homesFile = new File(this.plugin.getDataFolder(), "homes.yml");
-        this.homes = YamlConfiguration.loadConfiguration(this.homesFile);
 
         PluginManager pluginManager = Bukkit.getServer().getPluginManager();
         pluginManager.registerEvents(this, this.plugin);
@@ -57,15 +54,26 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
          When reloading plugins we want to make sure that all the
          player homes for players currently on the server are loaded
         */
-        @SuppressWarnings("unchecked")
-        Iterable<Player> onlinePlayers = (Iterable<Player>) Bukkit.getServer().getOnlinePlayers();
-        this.loadMultiplePlayersHomes(onlinePlayers);
+        loadPlayersHomes();
     }
 
     @Override
     public void onDisable()
     {
-        @SuppressWarnings("unchecked")
+        savePlayersHomes();
+    }
+
+    private void loadPlayersHomes()
+    {
+        this.playerHomes = new HashMap<String, HashMap<String, Warp>>();
+        this.homesFile = new File(this.plugin.getDataFolder(), "homes.yml");
+        this.homes = YamlConfiguration.loadConfiguration(this.homesFile);
+        Iterable<Player> onlinePlayers = (Iterable<Player>) Bukkit.getServer().getOnlinePlayers();
+        this.loadMultiplePlayersHomes(onlinePlayers);
+    }
+
+    private void savePlayersHomes()
+    {
         Iterable<Player> onlinePlayers = (Iterable<Player>) Bukkit.getServer().getOnlinePlayers();
         this.unloadMultiplePlayersHomes(onlinePlayers);
 
@@ -74,7 +82,8 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             this.homes.save(this.homesFile);
         } catch (IOException e)
         {
-            e.printStackTrace();
+            plugin.getLogger().info(e.getMessage());
+            plugin.getLogger().info(e.getStackTrace().toString());
         }
     }
 
@@ -216,13 +225,27 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
         player.sendMessage(this.plugin.prefix + "Deleted home " + homeName + ".");
     }
 
+    @BetterCommand(name = "loadhomes")
+    public void loadHomes(CommandSender commandSender, String[] args, String commandLabel)
+    {
+        loadPlayersHomes();
+        commandSender.sendMessage(ChatColor.GRAY + "Homes loaded!");
+    }
+
+    @BetterCommand(name = "savehomes")
+    public void saveHomes(CommandSender commandSender, String[] args, String commandLabel)
+    {
+        savePlayersHomes();
+        commandSender.sendMessage(ChatColor.GRAY + "Homes saved!");
+    }
+
     /*
      Takes the player to their default home. Usage:
         /home
      Takes the player to a named home. Usage:
         /home <home name>
     */
-    @BetterCommand(name = "home")
+    @BetterCommand(name = "home", target = CommandTarget.PLAYER)
     public void home(CommandSender commandSender, String[] args, String commandLabel)
     {
         // Get the player from commandSender
@@ -278,11 +301,18 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
      Show a page from the list of homes. Usage:
         /homes <page number>
     */
-    @BetterCommand(name = "homes")
+    @BetterCommand(name = "homes", target = CommandTarget.PLAYER)
     public void homes(CommandSender commandSender, String[] args, String commandLabel)
     {
         Player player = (Player) commandSender;
         String playerUUID = player.getUniqueId().toString();
+
+        if (!(this.playerHomes.containsKey(playerUUID)))
+        {
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "You have no homes.\nUse " + ChatColor.GOLD + "/sethome" + ChatColor.GRAY + " to set a home!");
+            return;
+        }
+
         HashMap<String, Warp> playerHomes = this.playerHomes.get(playerUUID);
 
         String output = "";
@@ -291,7 +321,8 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
         if (homeCount == 0)
         {
-            player.sendMessage(this.plugin.prefix + ChatColor.RED + "You have no homes.\nUse " + ChatColor.GOLD + "/sethome" + ChatColor.GRAY + "to set a home!");
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "You have no homes.\nUse " + ChatColor.GOLD + "/sethome" + ChatColor.GRAY + " to set a home!");
+            return;
         }
 
         ArrayList<Warp> homeArray = new ArrayList<Warp>(playerHomes.values());
@@ -345,7 +376,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
      Sets a named home at the player's current location. Usage:
         /sethome <home name>
     */
-    @BetterCommand(name = "sethome")
+    @BetterCommand(name = "sethome", target = CommandTarget.PLAYER)
     public void setHome(CommandSender commandSender, String[] args, String commandLabel)
     {
         Player player = (Player) commandSender;
@@ -375,7 +406,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
      Deletes a named home of the player. Usage:
         /delhome <home name>
     */
-    @BetterCommand(name = "delhome")
+    @BetterCommand(name = "delhome", target = CommandTarget.PLAYER)
     public void delHome(CommandSender commandSender, String[] args, String commandLabel)
     {
         // Get the player

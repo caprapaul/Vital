@@ -3,6 +3,7 @@ package io.github.caprapaul.vital.commands;
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
+import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.Vital;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
@@ -131,15 +132,9 @@ public class TeleportCommands extends BetterCommandExecutor
         }
     }
 
-    @BetterCommand(name = "tpa")
+    @BetterCommand(name = "tpa", target = CommandTarget.PLAYER)
     public void tpa(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't teleport!");
-            return;
-        }
-
         Player player = (Player) commandSender;
         if (!player.hasPermission("vital.tpa.overridecooldown"))
         {
@@ -207,15 +202,9 @@ public class TeleportCommands extends BetterCommandExecutor
         tpaCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
     }
 
-    @BetterCommand(name = "tpahere")
+    @BetterCommand(name = "tpahere", target = CommandTarget.PLAYER)
     public void tpahere(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: Can't teleport to console!");
-            return;
-        }
-
         Player player = (Player) commandSender;
         if (!player.hasPermission("vital.tpahere.overridecooldown"))
         {
@@ -283,15 +272,9 @@ public class TeleportCommands extends BetterCommandExecutor
         tpaCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
     }
 
-    @BetterCommand(name = "tpaccept")
+    @BetterCommand(name = "tpaccept", target = CommandTarget.PLAYER)
     public void tpaccept(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't accept teleport requests!");
-            return;
-        }
-
         Player player = (Player) commandSender;
 
         if (!(currentRequests.containsKey(player.getUniqueId().toString())))
@@ -335,15 +318,9 @@ public class TeleportCommands extends BetterCommandExecutor
         teleportingPlayer.teleport(targetPlayer);
     }
 
-    @BetterCommand(name = "tpdeny")
+    @BetterCommand(name = "tpdeny", target = CommandTarget.PLAYER)
     public void tpdeny(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't deny teleport requests!");
-            return;
-        }
-
         Player player = (Player) commandSender;
 
         if (!(currentRequests.containsKey(player.getUniqueId().toString())))
@@ -365,7 +342,7 @@ public class TeleportCommands extends BetterCommandExecutor
         player.sendMessage(plugin.prefix + ChatColor.GRAY + rejectedPlayer.getUniqueId().toString() + " was rejected!");
     }
 
-    @BetterCommand(name = "test")
+    @BetterCommand(name = "test", target = CommandTarget.PLAYER)
     public void test(CommandSender commandSender, String[] args, String commandLabel)
     {
         plugin.getLogger().info("TEST!");

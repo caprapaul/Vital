@@ -2,9 +2,9 @@ package io.github.caprapaul.bettercommandexecutor;
 
 import io.github.caprapaul.bettercommandexecutor.listeners.ToggleListener;
 import io.github.caprapaul.vitalcore.VitalCore;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.ChatColor;
+import org.bukkit.command.*;
+import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -45,6 +45,24 @@ public abstract class BetterCommandExecutor implements CommandExecutor, ToggleLi
                 BetterCommand betterCommand = method.getAnnotation(BetterCommand.class);
                 if (command.getName().equalsIgnoreCase(betterCommand.name()))
                 {
+                    int target = betterCommand.target();
+
+                    if(commandSender instanceof Player && (target & CommandTarget.PLAYER) == 0)
+                    {
+                        commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: This command cannot be used by players!");
+                        return;
+                    }
+                    else if(commandSender instanceof ConsoleCommandSender && (target & CommandTarget.CONSOLE) == 0)
+                    {
+                        commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: This command cannot be used by a console!");
+                        return;
+                    }
+                    else if(commandSender instanceof BlockCommandSender && (target & CommandTarget.COMMAND_BLOCK) == 0)
+                    {
+                        commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: This command cannot be used by blocks!");
+                        return;
+                    }
+
                     method.setAccessible(true);
                     try
                     {
