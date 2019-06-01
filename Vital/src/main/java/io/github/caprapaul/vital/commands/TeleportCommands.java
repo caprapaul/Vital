@@ -313,6 +313,8 @@ public class TeleportCommands extends BetterCommandExecutor
             return;
         }
 
+        teleportingPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
+        targetPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
         WarpWrapper.warp(plugin, teleportingPlayer, targetPlayer);
     }
 

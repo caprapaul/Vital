@@ -63,7 +63,7 @@ public class WarpWrapper
 
                 if (result)
                 {
-                    warpImmediate(plugin, player, destination);
+                    warpImmediate(player, destination);
                 }
                 else
                 {
@@ -75,7 +75,6 @@ public class WarpWrapper
 
     public static void warpImmediate(VitalCore plugin, Warp warp, Player player)
     {
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
         player.teleport(warp.toLocation(plugin));
     }
 
@@ -84,10 +83,8 @@ public class WarpWrapper
         player.teleport(location);
     }
 
-    public static void warpImmediate(VitalCore plugin, Player player, Player destination)
+    public static void warpImmediate(Player player, Player destination)
     {
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
-        destination.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
         player.teleport(destination);
     }
 
@@ -99,7 +96,7 @@ public class WarpWrapper
         return world.getChunkAt(location);
     }
 
-    public static Chunk getChunk(VitalCore plugin, Location location)
+    public static Chunk getChunk(Location location)
     {
         World world = location.getWorld();
 
@@ -129,7 +126,7 @@ public class WarpWrapper
 
     public static void warp(VitalCore plugin, Location location, Player player)
     {
-        Chunk chunkToLoad = WarpWrapper.getChunk(plugin, location);
+        Chunk chunkToLoad = WarpWrapper.getChunk(location);
 
         if (chunkToLoad.load(true))
         {
@@ -146,7 +143,7 @@ public class WarpWrapper
 
         if (chunkToLoad.load(true))
         {
-            WarpWrapper.warpImmediate(plugin, player, destination);
+            WarpWrapper.warpImmediate(player, destination);
             return;
         }
 
