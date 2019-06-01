@@ -4,6 +4,7 @@ import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vital.wrappers.WarpWrapper;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -101,7 +102,7 @@ public class BackCommand extends BetterCommandExecutor implements Listener
 
         player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
 
-        player.teleport(previousLocations.get(player.getUniqueId().toString()));
+        WarpWrapper.warp(plugin, previousLocations.get(player.getUniqueId().toString()), player);
         backCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
     }
 }

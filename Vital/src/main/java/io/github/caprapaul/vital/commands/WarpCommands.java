@@ -6,9 +6,12 @@ import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.Vital;
 import io.github.caprapaul.vital.data.Warp;
+import io.github.caprapaul.vital.wrappers.WarpWrapper;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +19,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,7 +66,6 @@ public class WarpCommands extends BetterCommandExecutor
         {
             e.printStackTrace();
         }
-
     }
 
     private void loadWarps()
@@ -125,8 +128,8 @@ public class WarpCommands extends BetterCommandExecutor
             return;
         }
 
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting to " + ChatColor.GOLD + warp.getName() + ChatColor.GRAY + "...");
-        player.teleport(warp.toLocation(plugin));
+        player.sendMessage(plugin.prefix + "Preparing to warp.");
+        WarpWrapper.warp(plugin, warp, player);
     }
 
     @BetterCommand(name = "warps")

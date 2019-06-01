@@ -6,6 +6,7 @@ import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.*;
 import io.github.caprapaul.vital.data.Warp;
+import io.github.caprapaul.vital.wrappers.WarpWrapper;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -292,7 +293,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to home: " + ChatColor.GOLD + target.getName() + ChatColor.GRAY + "...");
-        player.teleport(target.toLocation(this.plugin));
+        WarpWrapper.warp(this.plugin, target, player);
     }
 
     /*
