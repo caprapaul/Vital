@@ -1,18 +1,24 @@
 package io.github.caprapaul.vital.systems;
 
-import io.github.caprapaul.vital.data.Warp;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
 
 public class TeleportSystem
 {
-    public final static int DEFAULT_CHUNK_LOAD_DELAY = 10;
+    private final static int DEFAULT_CHUNK_LOAD_DELAY = 10;
+    private final static String CONFIG_KEY_VEHICLES = "teleport-vehicles";
+    private final static String CONFIG_KEY_LEASHED = "teleport-leashed";
+    private final static double LEASH_CHECK_RANGE = 7;
 
-    public static void teleportOnChunkLoaded(final VitalCore plugin, final Location location, final Player player, final Chunk chunk)
+    private static void teleportOnChunkLoaded(final VitalCore plugin, final Entity entity, final Location destination, final Chunk chunk)
     {
         new BukkitRunnable() {
             @Override
@@ -22,17 +28,17 @@ public class TeleportSystem
 
                 if (result)
                 {
-                    teleportImmediate(location, player);
+                    teleportImmediate(plugin, entity, destination);
                 }
                 else
                 {
-                    teleportOnChunkLoaded(plugin, location, player, chunk);
+                    teleportOnChunkLoaded(plugin, entity, destination, chunk);
                 }
             }
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void teleportOnChunkLoaded(final VitalCore plugin, final Player player, final Player destination, final Chunk chunk)
+    private static void teleportOnChunkLoaded(final VitalCore plugin, final Entity entity, final Entity destination, final Chunk chunk)
     {
         new BukkitRunnable() {
             @Override
@@ -42,34 +48,120 @@ public class TeleportSystem
 
                 if (result)
                 {
-                    teleportImmediate(player, destination);
+                    teleportImmediate(plugin, entity, destination);
                 }
                 else
                 {
-                    teleportOnChunkLoaded(plugin, player, destination, chunk);
+                    teleportOnChunkLoaded(plugin, entity, destination, chunk);
                 }
             }
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void teleportImmediate(Location location, Player player)
+    private static void teleportImmediate(VitalCore plugin, Entity entity, Location destination)
     {
-        player.teleport(location);
+        if (!plugin.getConfig().contains(CONFIG_KEY_VEHICLES))
+        {
+            plugin.getConfig().addDefault(CONFIG_KEY_VEHICLES, true);
+            plugin.getConfig().addDefault(CONFIG_KEY_LEASHED, true);
+            plugin.getConfig().options().copyDefaults(true);
+            plugin.saveConfig();
+        }
+
+        if (plugin.getConfig().getBoolean(CONFIG_KEY_LEASHED))
+        {
+            ArrayList<Entity> nearbyEntities = new ArrayList<>(entity.getNearbyEntities(LEASH_CHECK_RANGE, LEASH_CHECK_RANGE, LEASH_CHECK_RANGE));
+
+            for (Entity nearbyEntity : nearbyEntities)
+            {
+                if (nearbyEntity instanceof LivingEntity)
+                {
+                    LivingEntity livingEntity = (LivingEntity) nearbyEntity;
+
+                    if (livingEntity.isLeashed())
+                    {
+                        if (livingEntity.getLeashHolder().equals(entity))
+                        {
+                            livingEntity.teleport(destination);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (plugin.getConfig().getBoolean(CONFIG_KEY_VEHICLES))
+        {
+            if (entity.isInsideVehicle())
+            {
+                Vehicle vehicle = (Vehicle) entity.getVehicle();
+                vehicle.eject();
+                vehicle.teleport(destination);
+                entity.teleport(destination);
+                vehicle.addPassenger(entity);
+
+                return;
+            }
+        }
+
+        entity.teleport(destination);
     }
 
-    public static void teleportImmediate(Player player, Player destination)
+    private static void teleportImmediate(VitalCore plugin, Entity entity, Entity destination)
     {
-        player.teleport(destination);
+        if (!plugin.getConfig().contains(CONFIG_KEY_VEHICLES))
+        {
+            plugin.getConfig().addDefault(CONFIG_KEY_VEHICLES, true);
+            plugin.getConfig().addDefault(CONFIG_KEY_LEASHED, true);
+            plugin.getConfig().options().copyDefaults(true);
+            plugin.saveConfig();
+        }
+
+        if (plugin.getConfig().getBoolean(CONFIG_KEY_LEASHED))
+        {
+            ArrayList<Entity> nearbyEntities = new ArrayList<>(entity.getNearbyEntities(LEASH_CHECK_RANGE, LEASH_CHECK_RANGE, LEASH_CHECK_RANGE));
+
+            for (Entity nearbyEntity : nearbyEntities)
+            {
+                if (nearbyEntity instanceof LivingEntity)
+                {
+                    LivingEntity livingEntity = (LivingEntity) nearbyEntity;
+
+                    if (livingEntity.isLeashed())
+                    {
+                        if (livingEntity.getLeashHolder().equals(entity))
+                        {
+                            livingEntity.teleport(destination);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (plugin.getConfig().getBoolean(CONFIG_KEY_VEHICLES))
+        {
+            if (entity.isInsideVehicle())
+            {
+                Vehicle vehicle = (Vehicle) entity.getVehicle();
+                vehicle.eject();
+                vehicle.teleport(destination);
+                entity.teleport(destination);
+                vehicle.addPassenger(entity);
+
+                return;
+            }
+        }
+
+        entity.teleport(destination);
     }
 
-    public static Chunk getChunk(Location location)
+    private static Chunk getChunk(Location destination)
     {
-        World world = location.getWorld();
+        World world = destination.getWorld();
 
-        return world.getChunkAt(location);
+        return world.getChunkAt(destination);
     }
 
-    public static Chunk getChunk(Player destination)
+    private static Chunk getChunk(Entity destination)
     {
         Location location = destination.getLocation();
         World world = location.getWorld();
@@ -77,29 +169,36 @@ public class TeleportSystem
         return world.getChunkAt(location);
     }
 
-    public static void teleport(VitalCore plugin, Location location, Player player)
-    {
-        Chunk chunkToLoad = TeleportSystem.getChunk(location);
-
-        if (chunkToLoad.load(true))
-        {
-            TeleportSystem.teleportImmediate(location, player);
-            return;
-        }
-
-        TeleportSystem.teleportOnChunkLoaded(plugin, location, player, chunkToLoad);
-    }
-
-    public static void teleport(VitalCore plugin, Player player, Player destination)
+    public static void teleport(VitalCore plugin, Entity entity, Location destination)
     {
         Chunk chunkToLoad = TeleportSystem.getChunk(destination);
 
         if (chunkToLoad.load(true))
         {
-            TeleportSystem.teleportImmediate(player, destination);
+            TeleportSystem.teleportImmediate(plugin, entity, destination);
             return;
         }
 
-        TeleportSystem.teleportOnChunkLoaded(plugin, player, destination, chunkToLoad);
+        TeleportSystem.teleportOnChunkLoaded(plugin, entity, destination, chunkToLoad);
+    }
+
+    public static void teleport(VitalCore plugin, Entity entity, Entity destination)
+    {
+        if (!plugin.getConfig().contains(CONFIG_KEY_VEHICLES))
+        {
+            plugin.getConfig().addDefault(CONFIG_KEY_VEHICLES, true);
+            plugin.getConfig().options().copyDefaults(true);
+            plugin.saveConfig();
+        }
+
+        Chunk chunkToLoad = TeleportSystem.getChunk(destination);
+
+        if (chunkToLoad.load(true))
+        {
+            TeleportSystem.teleportImmediate(plugin, entity, destination);
+            return;
+        }
+
+        TeleportSystem.teleportOnChunkLoaded(plugin, entity, destination, chunkToLoad);
     }
 }

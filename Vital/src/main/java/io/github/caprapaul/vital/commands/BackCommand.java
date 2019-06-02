@@ -70,7 +70,7 @@ public class BackCommand extends BetterCommandExecutor implements Listener
         {
             return;
         }
-        
+
         Player player = event.getPlayer();
         previousLocations.put(player.getUniqueId().toString(), event.getFrom());
     }
@@ -115,7 +115,7 @@ public class BackCommand extends BetterCommandExecutor implements Listener
 
         player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
 
-        TeleportSystem.teleport(plugin, previousLocations.get(player.getUniqueId().toString()), player);
+        TeleportSystem.teleport(plugin, player, previousLocations.get(player.getUniqueId().toString()));
         backCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
     }
 }
