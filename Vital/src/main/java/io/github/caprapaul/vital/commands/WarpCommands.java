@@ -37,8 +37,6 @@ public class WarpCommands extends BetterCommandExecutor
     @Override
     public void onEnable()
     {
-        ConfigurationSerialization.registerClass(Warp.class, "Warp");
-
         this.warpsFile = new File(plugin.getDataFolder(), "warps.yml");
         this.warpsConfig = YamlConfiguration.loadConfiguration(warpsFile);
         this.warps = new ArrayList<Warp>();

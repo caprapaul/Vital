@@ -30,7 +30,7 @@ public class SpawnCommands extends BetterCommandExecutor
     private FileConfiguration spawnConfig;
 
     // There will only be one member
-    private ArrayList<Warp> worldSpawn;
+    private Warp worldSpawn;
 
     public SpawnCommands(VitalCore plugin)
     {
@@ -43,7 +43,6 @@ public class SpawnCommands extends BetterCommandExecutor
     {
         this.spawnFile = new File(plugin.getDataFolder(), FILE_NAME);
         this.spawnConfig = YamlConfiguration.loadConfiguration(spawnFile);
-        this.worldSpawn = new ArrayList<>();
         loadSpawn();
     }
 
@@ -67,7 +66,7 @@ public class SpawnCommands extends BetterCommandExecutor
 
     private void loadSpawn()
     {
-        this.worldSpawn = (ArrayList<Warp>) spawnConfig.get(CONFIG_KEY, new ArrayList<Warp>());
+        this.worldSpawn = (Warp) spawnConfig.get(CONFIG_KEY, new Warp());
     }
 
     public boolean onCommand(CommandSender commandSender, Command command, String commandLabel, String[] args)
@@ -82,19 +81,9 @@ public class SpawnCommands extends BetterCommandExecutor
         // Get the player from commandSender
         Player player = (Player) commandSender;
 
-        if (worldSpawn.size() <= 0)
-        {
-            World world = player.getWorld();
-
-            // Send a message and then teleport the player to the target.
-            player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to world spawn");
-            TeleportSystem.teleport(this.plugin, world.getSpawnLocation(), player);
-            return;
-        }
-
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to world spawn");
-        TeleportSystem.teleport(this.plugin, worldSpawn.get(0).toLocation(plugin), player);
+        TeleportSystem.teleport(this.plugin, worldSpawn.toLocation(plugin), player);
     }
 
     @BetterCommand(name = "spawndefault", target = CommandTarget.PLAYER)
@@ -116,14 +105,7 @@ public class SpawnCommands extends BetterCommandExecutor
         // Get the player from commandSender
         Player player = (Player) commandSender;
 
-        if (worldSpawn.size() > 0)
-        {
-            worldSpawn.set(0, new Warp(WARP_NAME, player.getLocation()));
-        }
-        else
-        {
-            worldSpawn.add(new Warp(WARP_NAME, player.getLocation()));
-        }
+        worldSpawn = new Warp(WARP_NAME, player.getLocation());
         spawnConfig.set(CONFIG_KEY, worldSpawn);
 
         player.sendMessage(plugin.prefix + ChatColor.GRAY + "World spawn has been set");
