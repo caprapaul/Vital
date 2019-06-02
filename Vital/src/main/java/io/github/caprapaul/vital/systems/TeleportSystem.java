@@ -12,26 +12,6 @@ public class TeleportSystem
 {
     public final static int DEFAULT_CHUNK_LOAD_DELAY = 10;
 
-    public static void teleportOnChunkLoaded(final VitalCore plugin, final Warp warp, final Player player, final Chunk chunk)
-    {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                boolean result = chunk.isLoaded();
-                //player.sendMessage(plugin.prefix + "Warp loaded: " + result);
-
-                if (result)
-                {
-                    teleportImmediate(plugin, warp, player);
-                }
-                else
-                {
-                    teleportOnChunkLoaded(plugin, warp, player, chunk);
-                }
-            }
-        }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
-    }
-
     public static void teleportOnChunkLoaded(final VitalCore plugin, final Location location, final Player player, final Chunk chunk)
     {
         new BukkitRunnable() {
@@ -72,11 +52,6 @@ public class TeleportSystem
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void teleportImmediate(VitalCore plugin, Warp warp, Player player)
-    {
-        player.teleport(warp.toLocation(plugin));
-    }
-
     public static void teleportImmediate(Location location, Player player)
     {
         player.teleport(location);
@@ -85,14 +60,6 @@ public class TeleportSystem
     public static void teleportImmediate(Player player, Player destination)
     {
         player.teleport(destination);
-    }
-
-    public static Chunk getChunk(VitalCore plugin, Warp warp)
-    {
-        Location location = warp.toLocation(plugin);
-        World world = location.getWorld();
-
-        return world.getChunkAt(location);
     }
 
     public static Chunk getChunk(Location location)
@@ -108,19 +75,6 @@ public class TeleportSystem
         World world = location.getWorld();
 
         return world.getChunkAt(location);
-    }
-
-    public static void teleport(VitalCore plugin, Warp warp, Player player)
-    {
-        Chunk chunkToLoad = TeleportSystem.getChunk(plugin, warp);
-
-        if (chunkToLoad.load(true))
-        {
-            TeleportSystem.teleportImmediate(plugin, warp, player);
-            return;
-        }
-
-        TeleportSystem.teleportOnChunkLoaded(plugin, warp, player, chunkToLoad);
     }
 
     public static void teleport(VitalCore plugin, Location location, Player player)

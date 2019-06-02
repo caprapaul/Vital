@@ -292,7 +292,7 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
 
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to home: " + ChatColor.GOLD + target.getName() + ChatColor.GRAY + "...");
-        TeleportSystem.teleport(this.plugin, target, player);
+        TeleportSystem.teleport(this.plugin, target.toLocation(plugin), player);
     }
 
     /*

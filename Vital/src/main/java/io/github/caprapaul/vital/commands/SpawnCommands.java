@@ -94,7 +94,7 @@ public class SpawnCommands extends BetterCommandExecutor
 
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to world spawn");
-        TeleportSystem.teleport(this.plugin, worldSpawn.get(0), player);
+        TeleportSystem.teleport(this.plugin, worldSpawn.get(0).toLocation(plugin), player);
     }
 
     @BetterCommand(name = "spawndefault", target = CommandTarget.PLAYER)
@@ -110,7 +110,7 @@ public class SpawnCommands extends BetterCommandExecutor
         TeleportSystem.teleport(this.plugin, world.getSpawnLocation(), player);
     }
 
-    @BetterCommand(name = "setspawn")
+    @BetterCommand(name = "setspawn", target = CommandTarget.PLAYER)
     public void setspawn(CommandSender commandSender, String[] args, String commandLabel)
     {
         // Get the player from commandSender
