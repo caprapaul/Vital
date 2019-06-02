@@ -5,6 +5,7 @@ import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
 import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.Vital;
+import io.github.caprapaul.vital.wrappers.WarpWrapper;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -312,10 +313,9 @@ public class TeleportCommands extends BetterCommandExecutor
             return;
         }
 
-        targetPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
         teleportingPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
-
-        teleportingPlayer.teleport(targetPlayer);
+        targetPlayer.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
+        WarpWrapper.warp(plugin, teleportingPlayer, targetPlayer);
     }
 
     @BetterCommand(name = "tpdeny", target = CommandTarget.PLAYER)
