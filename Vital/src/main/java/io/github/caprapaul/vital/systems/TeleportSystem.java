@@ -1,19 +1,18 @@
-package io.github.caprapaul.vital.wrappers;
+package io.github.caprapaul.vital.systems;
 
 import io.github.caprapaul.vital.data.Warp;
 import io.github.caprapaul.vitalcore.VitalCore;
-import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class WarpWrapper
+public class TeleportSystem
 {
     public final static int DEFAULT_CHUNK_LOAD_DELAY = 10;
 
-    public static void warpOnChunkLoaded(final VitalCore plugin, final Warp warp, final Player player, final Chunk chunk)
+    public static void teleportOnChunkLoaded(final VitalCore plugin, final Warp warp, final Player player, final Chunk chunk)
     {
         new BukkitRunnable() {
             @Override
@@ -23,17 +22,17 @@ public class WarpWrapper
 
                 if (result)
                 {
-                    warpImmediate(plugin, warp, player);
+                    teleportImmediate(plugin, warp, player);
                 }
                 else
                 {
-                    warpOnChunkLoaded(plugin, warp, player, chunk);
+                    teleportOnChunkLoaded(plugin, warp, player, chunk);
                 }
             }
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void warpOnChunkLoaded(final VitalCore plugin, final Location location, final Player player, final Chunk chunk)
+    public static void teleportOnChunkLoaded(final VitalCore plugin, final Location location, final Player player, final Chunk chunk)
     {
         new BukkitRunnable() {
             @Override
@@ -43,17 +42,17 @@ public class WarpWrapper
 
                 if (result)
                 {
-                    warpImmediate(location, player);
+                    teleportImmediate(location, player);
                 }
                 else
                 {
-                    warpOnChunkLoaded(plugin, location, player, chunk);
+                    teleportOnChunkLoaded(plugin, location, player, chunk);
                 }
             }
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void warpOnChunkLoaded(final VitalCore plugin, final Player player, final Player destination, final Chunk chunk)
+    public static void teleportOnChunkLoaded(final VitalCore plugin, final Player player, final Player destination, final Chunk chunk)
     {
         new BukkitRunnable() {
             @Override
@@ -63,27 +62,27 @@ public class WarpWrapper
 
                 if (result)
                 {
-                    warpImmediate(player, destination);
+                    teleportImmediate(player, destination);
                 }
                 else
                 {
-                    warpOnChunkLoaded(plugin, player, destination, chunk);
+                    teleportOnChunkLoaded(plugin, player, destination, chunk);
                 }
             }
         }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
     }
 
-    public static void warpImmediate(VitalCore plugin, Warp warp, Player player)
+    public static void teleportImmediate(VitalCore plugin, Warp warp, Player player)
     {
         player.teleport(warp.toLocation(plugin));
     }
 
-    public static void warpImmediate(Location location, Player player)
+    public static void teleportImmediate(Location location, Player player)
     {
         player.teleport(location);
     }
 
-    public static void warpImmediate(Player player, Player destination)
+    public static void teleportImmediate(Player player, Player destination)
     {
         player.teleport(destination);
     }
@@ -111,42 +110,42 @@ public class WarpWrapper
         return world.getChunkAt(location);
     }
 
-    public static void warp(VitalCore plugin, Warp warp, Player player)
+    public static void teleport(VitalCore plugin, Warp warp, Player player)
     {
-        Chunk chunkToLoad = WarpWrapper.getChunk(plugin, warp);
+        Chunk chunkToLoad = TeleportSystem.getChunk(plugin, warp);
 
         if (chunkToLoad.load(true))
         {
-            WarpWrapper.warpImmediate(plugin, warp, player);
+            TeleportSystem.teleportImmediate(plugin, warp, player);
             return;
         }
 
-        WarpWrapper.warpOnChunkLoaded(plugin, warp, player, chunkToLoad);
+        TeleportSystem.teleportOnChunkLoaded(plugin, warp, player, chunkToLoad);
     }
 
-    public static void warp(VitalCore plugin, Location location, Player player)
+    public static void teleport(VitalCore plugin, Location location, Player player)
     {
-        Chunk chunkToLoad = WarpWrapper.getChunk(location);
+        Chunk chunkToLoad = TeleportSystem.getChunk(location);
 
         if (chunkToLoad.load(true))
         {
-            WarpWrapper.warpImmediate(location, player);
+            TeleportSystem.teleportImmediate(location, player);
             return;
         }
 
-        WarpWrapper.warpOnChunkLoaded(plugin, location, player, chunkToLoad);
+        TeleportSystem.teleportOnChunkLoaded(plugin, location, player, chunkToLoad);
     }
 
-    public static void warp(VitalCore plugin, Player player, Player destination)
+    public static void teleport(VitalCore plugin, Player player, Player destination)
     {
-        Chunk chunkToLoad = WarpWrapper.getChunk(destination);
+        Chunk chunkToLoad = TeleportSystem.getChunk(destination);
 
         if (chunkToLoad.load(true))
         {
-            WarpWrapper.warpImmediate(player, destination);
+            TeleportSystem.teleportImmediate(player, destination);
             return;
         }
 
-        WarpWrapper.warpOnChunkLoaded(plugin, player, destination, chunkToLoad);
+        TeleportSystem.teleportOnChunkLoaded(plugin, player, destination, chunkToLoad);
     }
 }

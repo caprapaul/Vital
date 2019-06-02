@@ -3,8 +3,7 @@ package io.github.caprapaul.vital.commands;
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
-import io.github.caprapaul.vital.Vital;
-import io.github.caprapaul.vital.wrappers.WarpWrapper;
+import io.github.caprapaul.vital.systems.TeleportSystem;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,7 +101,7 @@ public class BackCommand extends BetterCommandExecutor implements Listener
 
         player.sendMessage(plugin.prefix + ChatColor.GRAY + "Teleporting...");
 
-        WarpWrapper.warp(plugin, previousLocations.get(player.getUniqueId().toString()), player);
+        TeleportSystem.teleport(plugin, previousLocations.get(player.getUniqueId().toString()), player);
         backCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
     }
 }
