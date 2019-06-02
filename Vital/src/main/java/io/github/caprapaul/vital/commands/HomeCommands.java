@@ -24,8 +24,7 @@ import org.bukkit.plugin.PluginManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 @SuppressWarnings("unused")
 @BetterExecutor
@@ -142,12 +141,12 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
     {
         String playerUUID = player.getUniqueId().toString();
 
-        if (!(playerHomes.containsKey(playerUUID)))
+        if (!(this.playerHomes.containsKey(playerUUID)))
         {
             return;
         }
 
-        ConfigurationSection configurationSection = homes.getConfigurationSection("homes." + playerUUID);
+        ConfigurationSection configurationSection = this.homes.getConfigurationSection("homes." + playerUUID);
 
         if (configurationSection == null)
         {
@@ -155,8 +154,14 @@ public class HomeCommands extends BetterCommandExecutor implements Listener
             return;
         }
 
-        for (Warp home : playerHomes.get(playerUUID).values())
+        HashMap.Entry<String, Warp> entry;
+        Iterator<HashMap.Entry<String, Warp>> it;
+        it = this.playerHomes.get(playerUUID).entrySet().iterator();
+
+        while (it.hasNext())
         {
+            entry = it.next();
+            Warp home = entry.getValue();
             configurationSection.set(home.getName(), home);
         }
 
