@@ -78,6 +78,10 @@ commands:
     description: Sets hunger to full
     permission: vital.feed
     permission-message: You do not have permission to use this command!
+  spawn:
+    description: Teleports caller to world set spawn point
+    permission: vital.spawn
+    permission-message: You do not have permission to use this command!
 
 permissions:
   vital.*:
@@ -97,6 +101,7 @@ permissions:
       vital.back: true
       vital.back.overridecooldown: true
       vital.heal: true
+      vital.spawn: true
   vital.test:
     description: Allows you to use the /test command.
     default: true
@@ -142,6 +147,9 @@ permissions:
   vital.feed:
     description: Allows you to use the /feed command
     default: op
+  vital.spawn:
+    description: Allows you to use the /spawn command
+    default: true
 
   #Home commands
   vital.homes.*:
