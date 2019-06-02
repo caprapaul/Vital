@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.plugin.PluginManager;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 @BetterExecutor
 public class BackCommand extends BetterCommandExecutor implements Listener
@@ -54,9 +55,22 @@ public class BackCommand extends BetterCommandExecutor implements Listener
         return false;
     }
 
+    private boolean areLocationsCoordinatesEqual(Location location1, Location location2)
+    {
+        return location1.getWorld().getName().equals(location2.getWorld().getName()) &&
+                Double.compare(location1.getX(), location2.getX()) == 0 &&
+                Double.compare(location1.getY(), location2.getY()) == 0 &&
+                Double.compare(location1.getZ(), location2.getZ()) == 0;
+    }
+
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event)
     {
+        if (areLocationsCoordinatesEqual(event.getFrom(), Objects.requireNonNull(event.getTo())))
+        {
+            return;
+        }
+        
         Player player = event.getPlayer();
         previousLocations.put(player.getUniqueId().toString(), event.getFrom());
     }
