@@ -28,26 +28,7 @@ public class TeleportSystem
 
                 if (result)
                 {
-                    teleportImmediate(plugin, entity, destination);
-                }
-                else
-                {
-                    teleportOnChunkLoaded(plugin, entity, destination, chunk);
-                }
-            }
-        }.runTaskLater(plugin, DEFAULT_CHUNK_LOAD_DELAY);
-    }
-
-    private static void teleportOnChunkLoaded(final VitalCore plugin, final Entity entity, final Entity destination, final Chunk chunk)
-    {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                boolean result = chunk.isLoaded();
-                //player.sendMessage(plugin.prefix + "Warp loaded: " + result);
-
-                if (result)
-                {
+                    destination.setY(destination.getY() + 0.5);
                     teleportImmediate(plugin, entity, destination);
                 }
                 else
@@ -106,54 +87,6 @@ public class TeleportSystem
         entity.teleport(destination);
     }
 
-    private static void teleportImmediate(VitalCore plugin, Entity entity, Entity destination)
-    {
-        if (!plugin.getConfig().contains(CONFIG_KEY_VEHICLES))
-        {
-            plugin.getConfig().addDefault(CONFIG_KEY_VEHICLES, true);
-            plugin.getConfig().addDefault(CONFIG_KEY_LEASHED, true);
-            plugin.getConfig().options().copyDefaults(true);
-            plugin.saveConfig();
-        }
-
-        if (plugin.getConfig().getBoolean(CONFIG_KEY_LEASHED))
-        {
-            ArrayList<Entity> nearbyEntities = new ArrayList<>(entity.getNearbyEntities(LEASH_CHECK_RANGE, LEASH_CHECK_RANGE, LEASH_CHECK_RANGE));
-
-            for (Entity nearbyEntity : nearbyEntities)
-            {
-                if (nearbyEntity instanceof LivingEntity)
-                {
-                    LivingEntity livingEntity = (LivingEntity) nearbyEntity;
-
-                    if (livingEntity.isLeashed())
-                    {
-                        if (livingEntity.getLeashHolder().equals(entity))
-                        {
-                            livingEntity.teleport(destination);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (plugin.getConfig().getBoolean(CONFIG_KEY_VEHICLES))
-        {
-            if (entity.isInsideVehicle())
-            {
-                Vehicle vehicle = (Vehicle) entity.getVehicle();
-                vehicle.eject();
-                vehicle.teleport(destination);
-                entity.teleport(destination);
-                vehicle.addPassenger(entity);
-
-                return;
-            }
-        }
-
-        entity.teleport(destination);
-    }
-
     private static Chunk getChunk(Location destination)
     {
         World world = destination.getWorld();
@@ -161,44 +94,19 @@ public class TeleportSystem
         return world.getChunkAt(destination);
     }
 
-    private static Chunk getChunk(Entity destination)
-    {
-        Location location = destination.getLocation();
-        World world = location.getWorld();
-
-        return world.getChunkAt(location);
-    }
-
     public static void teleport(VitalCore plugin, Entity entity, Location destination)
     {
         Chunk chunkToLoad = TeleportSystem.getChunk(destination);
 
-        if (chunkToLoad.load(true))
-        {
-            TeleportSystem.teleportImmediate(plugin, entity, destination);
-            return;
-        }
-
+        chunkToLoad.load(true);
         TeleportSystem.teleportOnChunkLoaded(plugin, entity, destination, chunkToLoad);
     }
 
     public static void teleport(VitalCore plugin, Entity entity, Entity destination)
     {
-        if (!plugin.getConfig().contains(CONFIG_KEY_VEHICLES))
-        {
-            plugin.getConfig().addDefault(CONFIG_KEY_VEHICLES, true);
-            plugin.getConfig().options().copyDefaults(true);
-            plugin.saveConfig();
-        }
+        Chunk chunkToLoad = TeleportSystem.getChunk(destination.getLocation());
 
-        Chunk chunkToLoad = TeleportSystem.getChunk(destination);
-
-        if (chunkToLoad.load(true))
-        {
-            TeleportSystem.teleportImmediate(plugin, entity, destination);
-            return;
-        }
-
-        TeleportSystem.teleportOnChunkLoaded(plugin, entity, destination, chunkToLoad);
+        chunkToLoad.load(true);
+        TeleportSystem.teleportOnChunkLoaded(plugin, entity, destination.getLocation(), chunkToLoad);
     }
 }
