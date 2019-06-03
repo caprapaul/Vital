@@ -3,6 +3,7 @@ package io.github.caprapaul.vital.commands;
 import io.github.caprapaul.bettercommandexecutor.BetterCommand;
 import io.github.caprapaul.bettercommandexecutor.BetterCommandExecutor;
 import io.github.caprapaul.bettercommandexecutor.BetterExecutor;
+import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.systems.TeleportSystem;
 import io.github.caprapaul.vitalcore.VitalCore;
 import org.bukkit.Bukkit;
@@ -71,6 +72,12 @@ public class BackCommand extends BetterCommandExecutor implements Listener
             return;
         }
 
+        if (!(event.getCause().equals(PlayerTeleportEvent.TeleportCause.COMMAND) ||
+                event.getCause().equals(PlayerTeleportEvent.TeleportCause.PLUGIN)))
+        {
+            return;
+        }
+
         Player player = event.getPlayer();
         previousLocations.put(player.getUniqueId().toString(), event.getFrom());
     }
@@ -82,15 +89,9 @@ public class BackCommand extends BetterCommandExecutor implements Listener
         previousLocations.put(player.getUniqueId().toString(), player.getLocation());
     }
 
-    @BetterCommand(name = "back")
+    @BetterCommand(name = "back", target = CommandTarget.PLAYER)
     public void back(CommandSender commandSender, String[] args, String commandLabel)
     {
-        if (!(commandSender instanceof Player))
-        {
-            commandSender.sendMessage(plugin.prefix + ChatColor.RED + "Error: The console can't teleport!");
-            return;
-        }
-
         Player player = (Player) commandSender;
 
         if (!player.hasPermission("vital.back.overridecooldown"))
