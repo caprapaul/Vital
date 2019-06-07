@@ -7,6 +7,7 @@ import io.github.caprapaul.bettercommandexecutor.CommandTarget;
 import io.github.caprapaul.vital.data.Warp;
 import io.github.caprapaul.vital.systems.TeleportSystem;
 import io.github.caprapaul.vitalcore.VitalCore;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -81,6 +82,12 @@ public class SpawnCommands extends BetterCommandExecutor
         // Get the player from commandSender
         Player player = (Player) commandSender;
 
+        if(!worldSpawn.getName().equals(WARP_NAME))
+        {
+            player.sendMessage(this.plugin.prefix + ChatColor.RED + "Error: There is no set world spawn");
+            return;
+        }
+
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to world spawn");
         TeleportSystem.teleport(this.plugin, player, worldSpawn.toLocation(plugin));
@@ -92,7 +99,7 @@ public class SpawnCommands extends BetterCommandExecutor
         // Get the player from commandSender
         Player player = (Player) commandSender;
 
-        World world = player.getWorld();
+        World world = Bukkit.getWorld("world");
 
         // Send a message and then teleport the player to the target.
         player.sendMessage(this.plugin.prefix + ChatColor.GRAY + "Teleporting to original world spawn");

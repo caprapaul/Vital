@@ -109,7 +109,7 @@ public class TeleportCommands extends BetterCommandExecutor
                 recipient.sendMessage(plugin.prefix + ChatColor.GOLD + sender.getName() + ChatColor.GRAY + " has sent a request to teleport to you." + ChatColor.RESET + sendTpAccept + sendTpDeny);
                 break;
         }
-        currentRequests.put(recipient.getUniqueId().toString(), new Request(sender.getName(), type));
+        currentRequests.put(recipient.getName(), new Request(sender.getName(), type));
     }
 
     private boolean killRequest(String key)
@@ -139,9 +139,9 @@ public class TeleportCommands extends BetterCommandExecutor
         if (!player.hasPermission("vital.tpa.overridecooldown"))
         {
             int cooldown = plugin.getConfig().getInt("tpa-cooldown");
-            if (tpaCooldowns.containsKey(player.getUniqueId().toString()))
+            if (tpaCooldowns.containsKey(player.getName()))
             {
-                long diff = (System.currentTimeMillis() - tpaCooldowns.get(player.getUniqueId().toString())) / 1000;
+                long diff = (System.currentTimeMillis() - tpaCooldowns.get(player.getName())) / 1000;
                 if (diff < cooldown)
                 {
                     player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
@@ -180,9 +180,9 @@ public class TeleportCommands extends BetterCommandExecutor
 
         boolean overrideOldRequest = plugin.getConfig().getBoolean("override-old-request");
 
-        if (!(overrideOldRequest) && currentRequests.containsKey(target.getUniqueId().toString()))
+        if (!(overrideOldRequest) && currentRequests.containsKey(target.getName()))
         {
-            if (currentRequests.get(target.getUniqueId().toString()).getSender().equals(player.getUniqueId().toString()))
+            if (currentRequests.get(target.getName()).getSender().equals(player.getName()))
             {
                 player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't send multiple requests to the same player!");
                 return;
@@ -195,11 +195,11 @@ public class TeleportCommands extends BetterCommandExecutor
         {
             public void run()
             {
-                killRequest(target.getUniqueId().toString());
+                killRequest(target.getName());
             }
         }, keepAlive);
 
-        tpaCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
+        tpaCooldowns.put(player.getName(), System.currentTimeMillis());
     }
 
     @BetterCommand(name = "tpahere", target = CommandTarget.PLAYER)
@@ -209,9 +209,9 @@ public class TeleportCommands extends BetterCommandExecutor
         if (!player.hasPermission("vital.tpahere.overridecooldown"))
         {
             int cooldown = plugin.getConfig().getInt("tpa-cooldown");
-            if (tpaCooldowns.containsKey(player.getUniqueId().toString()))
+            if (tpaCooldowns.containsKey(player.getName()))
             {
-                long diff = (System.currentTimeMillis() - tpaCooldowns.get(player.getUniqueId().toString())) / 1000;
+                long diff = (System.currentTimeMillis() - tpaCooldowns.get(player.getName())) / 1000;
                 if (diff < cooldown)
                 {
                     player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You must wait a " + cooldown + " second cooldown in between teleport requests!");
@@ -250,9 +250,9 @@ public class TeleportCommands extends BetterCommandExecutor
 
         boolean overrideOldRequest = plugin.getConfig().getBoolean("override-old-request");
 
-        if (!(overrideOldRequest) && currentRequests.containsKey(target.getUniqueId().toString()))
+        if (!(overrideOldRequest) && currentRequests.containsKey(target.getName()))
         {
-            if (currentRequests.get(target.getUniqueId().toString()).getSender().equals(player.getUniqueId().toString()))
+            if (currentRequests.get(target.getName()).getSender().equals(player.getName()))
             {
                 player.sendMessage(plugin.prefix + ChatColor.RED + "Error: You can't send multiple requests to the same player!");
                 return;
@@ -265,11 +265,11 @@ public class TeleportCommands extends BetterCommandExecutor
         {
             public void run()
             {
-                killRequest(target.getUniqueId().toString());
+                killRequest(target.getName());
             }
         }, keepAlive);
 
-        tpaCooldowns.put(player.getUniqueId().toString(), System.currentTimeMillis());
+        tpaCooldowns.put(player.getName(), System.currentTimeMillis());
     }
 
     @BetterCommand(name = "tpaccept", target = CommandTarget.PLAYER)
@@ -277,12 +277,12 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         Player player = (Player) commandSender;
 
-        if (!(currentRequests.containsKey(player.getUniqueId().toString())))
+        if (!(currentRequests.containsKey(player.getName())))
         {
             player.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
             return;
         }
-        Request request = currentRequests.get(player.getUniqueId().toString());
+        Request request = currentRequests.get(player.getName());
 
         Player teleportingPlayer = null;
         Player targetPlayer = null;
@@ -298,7 +298,7 @@ public class TeleportCommands extends BetterCommandExecutor
                 break;
         }
 
-        currentRequests.remove(player.getUniqueId().toString());
+        currentRequests.remove(player.getName());
 
         if (teleportingPlayer == null)
         {
@@ -322,23 +322,23 @@ public class TeleportCommands extends BetterCommandExecutor
     {
         Player player = (Player) commandSender;
 
-        if (!(currentRequests.containsKey(player.getUniqueId().toString())))
+        if (!(currentRequests.containsKey(player.getName())))
         {
             player.sendMessage(plugin.prefix + ChatColor.RED + "Error: It appears you don't have any tp requests currently. Maybe it timed out?");
             return;
         }
-        Request request = currentRequests.get(player.getUniqueId().toString());
+        Request request = currentRequests.get(player.getName());
 
         Player rejectedPlayer = plugin.getServer().getPlayer(request.getSender());
-        currentRequests.remove(player.getUniqueId().toString());
+        currentRequests.remove(player.getName());
 
         if (rejectedPlayer == null)
         {
             return;
         }
 
-        rejectedPlayer.sendMessage(plugin.prefix + ChatColor.RED + player.getUniqueId().toString() + " rejected your teleport request! :(");
-        player.sendMessage(plugin.prefix + ChatColor.GRAY + rejectedPlayer.getUniqueId().toString() + " was rejected!");
+        rejectedPlayer.sendMessage(plugin.prefix + ChatColor.RED + player.getName() + " rejected your teleport request! :(");
+        player.sendMessage(plugin.prefix + ChatColor.GRAY + rejectedPlayer.getName() + " was rejected!");
     }
 
     @BetterCommand(name = "test", target = CommandTarget.PLAYER)
